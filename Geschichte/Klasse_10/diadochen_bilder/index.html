@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Seleukidenreich - Interaktive Lernseite</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #d35400;
+            --accent: #f39c12;
+            --bg: #fdfcfb;
+            --text: #2c3e50;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #34495e);
+            color: var(--white);
+            padding: 1.5rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .lang-switch { margin-top: 15px; }
+        .lang-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--white);
+            cursor: pointer;
+            font-size: 1.4rem;
+            padding: 5px 10px;
+            border-radius: 8px;
+            margin: 0 5px;
+            transition: 0.3s;
+        }
+        .lang-btn:hover, .lang-btn.active { background: var(--secondary); border-color: var(--secondary); }
+
+        nav {
+            background: var(--white);
+            display: flex;
+            overflow-x: auto;
+            position: sticky;
+            top: 135px;
+            z-index: 999;
+            justify-content: center;
+            border-bottom: 3px solid var(--secondary);
+            padding: 5px 0;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            white-space: nowrap;
+            font-size: 1rem;
+            border-radius: 20px;
+            margin: 0 5px;
+        }
+
+        .tab-btn.active { background-color: var(--secondary); color: white; }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 25px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .content-section { display: none; animation: fadeIn 0.5s; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .hero-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .glossary-box { background: #fef5e7; border-left: 6px solid var(--accent); padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .task-box { background: #ebf5fb; border-left: 6px solid #3498db; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        
+        .glossary-content { display: none; margin-top: 15px; }
+        .toggle-btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 100%; }
+
+        .links-list { background: #f2f4f4; padding: 15px; border-radius: 8px; text-align: center; }
+        .links-list a { color: var(--secondary); text-decoration: none; font-weight: bold; margin: 0 10px; }
+
+        h2 { color: var(--primary); font-size: 1.8rem; margin-top: 0; }
+        h3 { color: var(--secondary); margin-bottom: 10px; }
+
+        .tip-card { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 id="main-title">Das Seleukidenreich (312–64 v. Chr.)</h1>
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLang('de')">🇩🇪</button>
+        <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
+        <button class="lang-btn" onclick="setLang('ru')">🇷🇺</button>
+        <button class="lang-btn" onclick="setLang('ar')">🇸🇦</button>
+        <button class="lang-btn" onclick="setLang('ro')">🇷🇴</button>
+    </div>
+</header>
+
+<nav>
+    <button class="tab-btn active" onclick="openTab(event, 'g1')" data-key="nav-g1">Gruppe 1</button>
+    <button class="tab-btn" onclick="openTab(event, 'g2')" data-key="nav-g2">Gruppe 2</button>
+    <button class="tab-btn" onclick="openTab(event, 'g3')" data-key="nav-g3">Gruppe 3</button>
+    <button class="tab-btn" onclick="openTab(event, 'g4')" data-key="nav-g4">Gruppe 4</button>
+    <button class="tab-btn" onclick="openTab(event, 'g5')" data-key="nav-g5">Gruppe 5</button>
+    <button class="tab-btn" onclick="openTab(event, 'tips')" data-key="nav-tips">Präsentations-Tipps</button>
+</nav>
+
+<div class="container">
+    <div id="g1" class="content-section active">
+        <img src="https://images.unsplash.com/photo-1599739291060-4578e77dac5d?auto=format&fit=crop&q=80&w=1000" alt="Antike Ruinen" class="hero-img">
+        <h2 data-key="g1-title">Gründung & Aufstieg: Seleukos I. Nikator</h2>
+        <div class="info-text">
+            <p>Nach dem plötzlichen Tod Alexanders des Großen im Jahr 323 v. Chr. hinterließ dieser ein Weltreich ohne klaren Erben. In den darauffolgenden Diadochenkriegen kämpften seine Generäle um die Vorherrschaft. Seleukos I., der den Beinamen „Nikator“ (der Sieger) erhielt, kristallisierte sich als einer der fähigsten Strategen heraus. Zunächst erhielt er die Satrapie Babylonien, musste jedoch zwischenzeitlich fliehen, bevor er 312 v. Chr. endgültig die Kontrolle übernahm. Sein Herrschaftsbereich dehnte sich schnell aus und umfasste fast das gesamte asiatische Territorium Alexanders – von der Ägäis bis zum Indus. Seleukos festigte seine Macht durch die Gründung strategisch wichtiger Städte wie Seleukeia am Tigris und Antiochia am Orontes. Er verfolgte eine Politik der Integration, indem er persische Verwaltungsstrukturen beibehielt, aber griechische Siedler zur Sicherung der Grenzen ansiedelte. Dies führte zu einer einzigartigen Verschmelzung von Kulturen (Hellenismus). Das Reich war ethnisch und religiös hochgradig heterogen, was Seleukos durch ein Netzwerk loyaler Gouverneure und eine schlagkräftige Armee kontrollierte. Trotz zahlreicher Kriege mit den Ptolemäern gelang es ihm, ein stabiles Fundament für eine Dynastie zu legen, die über zwei Jahrhunderte bestehen sollte. Seine Ermordung im Jahr 281 v. Chr. beendete zwar sein Leben, aber nicht seine Vision eines eurasischen Großreichs.</p>
+        </div>
+        <div class="glossary-box">
+            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
+            <div class="glossary-content">
+                <ul>
+                    <li><strong>Diadochen:</strong> Die militärischen Nachfolger Alexanders.</li>
+                    <li><strong>Satrapie:</strong> Provinz eines altpersischen Großreichs.</li>
+                    <li><strong>Hellenismus:</strong> Zeitalter der Verbreitung griechischer Kultur.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="task-box">
+            <h3 data-key="task-title">Eure Aufgaben</h3>
+            <ul>
+                <li>Analysiere die Rolle von Seleukos I. beim Zerfall von Alexanders Weltreich.</li>
+                <li>Erkläre die Bedeutung der Stadtgründungen für die langfristige Machtsicherung.</li>
+                <li>Diskutiere, welche Herausforderungen die Größe des Reiches mit sich brachte.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="g2" class="content-section">
+        <img src="https://images.unsplash.com/photo-1541447271487-09612b3f49f7?auto=format&fit=crop&q=80&w=1000" alt="Antike Stadt" class="hero-img">
+        <h2 data-key="g2-title">Verwaltung des Vielvölkerstaates</h2>
+        <div class="info-text">
+            <p>Das Seleukidenreich war eine organisatorische Meisterleistung. Da das Gebiet zu groß für eine zentrale Verwaltung war, basierte das System auf den persischen Satrapien. An der Spitze jeder Provinz stand ein Satrap, der dem König direkt unterstellt war. Um die Macht zu sichern, wurden hunderte griechische Siedlungen (Poleis) gegründet. Diese dienten als Inseln der Loyalität in einem oft feindseligen Umfeld. Die Wirtschaft basierte auf dem Fernhandel über die Seidenstraße, was dem Reich enorme Zölle einbrachte. Doch die Distanzen waren ein Problem: Nachrichten von Antiochia nach Baktrien (Afghanistan) brauchten Wochen. Lokale Gouverneure nutzten diese Schwäche oft für Aufstände. Die Seleukiden mussten daher eine "Wander-Hofhaltung" betreiben: Der König war ständig mit seinem Heer unterwegs, um Präsenz zu zeigen. Ein weiteres Standbein war die Anerkennung lokaler Traditionen. In Babylon opferten die Könige den einheimischen Göttern, um die Unterstützung der Priesterkaste zu gewinnen. Dennoch blieb die soziale Schicht gespalten: Oben die griechisch-makedonische Elite, darunter die einheimische Bevölkerung.</p>
+        </div>
+        <div class="glossary-box">
+            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
+            <div class="glossary-content">
+                <ul>
+                    <li><strong>Poleis:</strong> Griechische Städte mit eigener Selbstverwaltung.</li>
+                    <li><strong>Seidenstraße:</strong> Antikes Handelsnetzwerk zwischen China und Europa.</li>
+                    <li><strong>Priesterkaste:</strong> Einflussreiche soziale Gruppe religiöser Führer.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="task-box">
+            <h3 data-key="task-title">Eure Aufgaben</h3>
+            <ul>
+                <li>Vergleiche die seleukidische Verwaltung mit dem persischen Vorbild.</li>
+                <li>Erläutere die wirtschaftliche Bedeutung der Seidenstraße für die Staatskasse.</li>
+                <li>Beurteile die Wirksamkeit der griechischen Poleis als Herrschaftsinstrument.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="g3" class="content-section">
+        <img src="https://images.unsplash.com/photo-1605001011156-cbf0b0f67a51?auto=format&fit=crop&q=80&w=1000" alt="Skulptur" class="hero-img">
+        <h2 data-key="g3-title">Kultur: Der Schmelztiegel Hellenismus</h2>
+        <div class="info-text">
+            <p>Die kulturelle Identität des Seleukidenreichs war durch den Hellenismus geprägt. Griechisch wurde zur Amtssprache und zur Sprache der Wissenschaft. Doch es war keine reine Einbahnstraße. In den Städten vermischten sich griechische Götter mit orientalischen Gottheiten (Synkretismus). Zeus wurde in Syrien oft als Baal verehrt. Diese kulturelle Offenheit stieß jedoch auf Widerstand, wenn sie zu weit ging. Bekanntestes Beispiel ist der Makkabäeraufstand in Judäa (167 v. Chr.): Als König Antiochos IV. versuchte, den jüdischen Tempel in ein griechisches Heiligtum umzuwandeln, kam es zur Revolte. In der Kunst entstand ein neuer Realismus; Statuen zeigten nun auch Alter, Schmerz und Emotionen statt nur idealer Schönheit. Die Wissenschaften blühten auf, da griechische Mathematik auf babylonische Astronomie traf. Bibliotheken wurden zu Zentren des Wissens. Trotz der Dominanz griechischer Kultur auf administrativer Ebene blieb das Landvolk meist bei seinen alten Traditionen, was langfristig zu Spannungen zwischen den modernisierten Städten und dem konservativen Hinterland führte.</p>
+        </div>
+        <div class="glossary-box">
+            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
+            <div class="glossary-content">
+                <ul>
+                    <li><strong>Synkretismus:</strong> Vermischung verschiedener religiöser Überzeugungen.</li>
+                    <li><strong>Makkabäeraufstand:</strong> Jüdischer Widerstand gegen die Hellenisierung.</li>
+                    <li><strong>Realismus:</strong> Darstellung der Wirklichkeit ohne Beschönigung.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="task-box">
+            <h3 data-key="task-title">Eure Aufgaben</h3>
+            <ul>
+                <li>Erkläre, wie die Vermischung der Kulturen im Alltag sichtbar wurde.</li>
+                <li>Untersuche die Konflikte, die durch die erzwungene Hellenisierung entstanden.</li>
+                <li>Beschreibe die wissenschaftlichen Fortschritte durch den kulturellen Austausch.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="g4" class="content-section">
+        <img src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?auto=format&fit=crop&q=80&w=1000" alt="Elefant" class="hero-img">
+        <h2 data-key="g4-title">Militär: Phalanx und Kriegselefanten</h2>
+        <div class="info-text">
+            <p>Das Militär war der wichtigste Machtfaktor. Die Seleukiden verfügten über die berühmte "Silberschild-Phalanx" – eine Eliteeinheit der Infanterie. Einzigartig war ihr Einsatz von Kriegselefanten, die sie durch Verträge mit indischen Herrschern erwarben. Diese Tiere wirkten in Schlachten wie Panzer und konnten feindliche Reiterreihen in Panik versetzen. In den "Syrischen Kriegen" kämpften die Seleukiden über 100 Jahre lang gegen die Ptolemäer um die Vorherrschaft im Nahen Osten. Diese ständigen Kriege erforderten enorme Geldmengen, was zu hohen Steuern und Unmut führte. Ein entscheidender Einschnitt war der Krieg gegen das Römische Reich. In der Schlacht bei Magnesia (190 v. Chr.) erwiesen sich die römischen Legionen als flexibler als die starre seleukidische Phalanx. Die Niederlage zwang das Reich im Frieden von Apameia dazu, seine Flotte zu vernichten, seine Elefanten abzugeben und gigantische Reparationen zu zahlen. Dies schwächte die Zentralmacht dauerhaft und ermutigte Provinzen zur Abspaltung.</p>
+        </div>
+        <div class="glossary-box">
+            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
+            <div class="glossary-content">
+                <ul>
+                    <li><strong>Phalanx:</strong> Eine geschlossene Formation von Speerträgern.</li>
+                    <li><strong>Reparationen:</strong> Kriegsentschädigungszahlungen an den Sieger.</li>
+                    <li><strong>Legion:</strong> Die taktische Grundeinheit des römischen Heeres.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="task-box">
+            <h3 data-key="task-title">Eure Aufgaben</h3>
+            <ul>
+                <li>Beschreibe die Vor- und Nachteile der seleukidischen Kriegführung.</li>
+                <li>Analysiere die langfristigen Folgen des Friedens von Apameia.</li>
+                <li>Vergleiche die Phalanx-Taktik mit der Taktik der römischen Legion.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="g5" class="content-section">
+        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=1000" alt="Ruinen" class="hero-img">
+        <h2 data-key="g5-title">Niedergang und das Erbe für Europa</h2>
+        <div class="info-text">
+            <p>Der Niedergang erfolgte von zwei Seiten: Im Osten eroberten die Parther den Iran und Mesopotamien, im Westen drängte Rom nach. Gleichzeitig zerfleischten sich die seleukidischen Prinzen in Bürgerkriegen um den Thron. Um 100 v. Chr. war das Reich nur noch ein lokaler Stadtstaat um Antiochia. Im Jahr 64 v. Chr. erklärte der römische General Pompeius das Reich für aufgelöst und machte es zur Provinz Syria. Doch das Erbe war gewaltig: Das Seleukidenreich hatte den Nahen Osten "europäisiert". Die griechische Sprache blieb bis zur islamischen Eroberung im 7. Jahrhundert die Bildungssprache der Region. Viele Städte, die heute noch existieren, wurden damals gegründet. Das Christentum konnte sich später nur so schnell ausbreiten, weil es auf der seleukidischen Infrastruktur (Sprache, Straßen, Städte) aufbaute. Die Vermittlung von Wissen zwischen Orient und Okzident (Abendland) legte den Grundstein für die moderne westliche Zivilisation. Die Seleukiden waren somit die Brückenbauer zwischen den Kontinenten.</p>
+        </div>
+        <div class="glossary-box">
+            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
+            <div class="glossary-content">
+                <ul>
+                    <li><strong>Parther:</strong> Steppenvolk, das das persische Erbe antrat.</li>
+                    <li><strong>Okzident:</strong> Das Abendland (Europa/Westen).</li>
+                    <li><strong>Infrastruktur:</strong> Straßen, Kommunikationsnetze und öffentliche Einrichtungen.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="task-box">
+            <h3 data-key="task-title">Eure Aufgaben</h3>
+            <ul>
+                <li>Erläutere die inneren und äußeren Gründe für den Zusammenbruch des Reiches.</li>
+                <li>Diskutiere die These: "Ohne die Seleukiden gäbe es kein europäisches Abendland".</li>
+                <li>Erstelle einen Zeitstrahl der wichtigsten Ereignisse des Niedergangs.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="tips" class="content-section">
+        <h2 data-key="tips-title">iPad-Präsentations-Checkliste</h2>
+        <div class="tip-card">
+            <h3>1. Visualisierung</h3>
+            <p>Nutze Karten-Apps oder Screenshots, um die Verkleinerung des Reiches von 300 v. Chr. bis 64 v. Chr. in einer Animation zu zeigen.</p>
+        </div>
+        <div class="tip-card">
+            <h3>2. Quellenarbeit</h3>
+            <p>Bindet ein Foto einer seleukidischen Münze ein. Fragt die Klasse: "Was sagt uns dieses Bild über das Selbstverständnis des Königs?"</p>
+        </div>
+        <div class="tip-card">
+            <h3>3. Interaktion</h3>
+            <p>Erstellt am Ende eurer Präsentation ein kurzes Kahoot-Quiz oder eine Mentimeter-Umfrage zu eurem Thema.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const translations = {
+        'de': { 'nav-g1': 'Gruppe 1', 'nav-g2': 'Gruppe 2', 'nav-g3': 'Gruppe 3', 'nav-g4': 'Gruppe 4', 'nav-g5': 'Gruppe 5', 'nav-tips': 'Präsentations-Tipps', 'glossary-btn': 'Schwierige Wörter erklären', 'task-title': 'Eure Aufgaben', 'main-title': 'Das Seleukidenreich (312–64 v. Chr.)' },
+        'en': { 'nav-g1': 'Group 1', 'nav-g2': 'Group 2', 'nav-g3': 'Group 3', 'nav-g4': 'Group 4', 'nav-g5': 'Group 5', 'nav-tips': 'Presentation Tips', 'glossary-btn': 'Explain hard words', 'task-title': 'Your Tasks', 'main-title': 'The Seleucid Empire (312–64 BC)' },
+        'ru': { 'nav-g1': 'Группа 1', 'nav-g2': 'Группа 2', 'nav-g3': 'Группа 3', 'nav-g4': 'Группа 4', 'nav-g5': 'Группа 5', 'nav-tips': 'Советы', 'glossary-btn': 'Объяснить слова', 'task-title': 'Задачи', 'main-title': 'Империя Селевкидов' },
+        'ar': { 'nav-g1': 'المجموعة ١', 'nav-g2': 'المجموعة ٢', 'nav-g3': 'المجموعة ٣', 'nav-g4': 'المجموعة ٤', 'nav-g5': 'المجموعة ٥', 'nav-tips': 'نصائح', 'glossary-btn': 'شرح الكلمات', 'task-title': 'المهام', 'main-title': 'الدولة السلوقية' },
+        'ro': { 'nav-g1': 'Grupul 1', 'nav-g2': 'Grupul 2', 'nav-g3': 'Grupul 3', 'nav-g4': 'Grupul 4', 'nav-g5': 'Grupul 5', 'nav-tips': 'Sfaturi', 'glossary-btn': 'Explică cuvintele', 'task-title': 'Sarcinile tale', 'main-title': 'Imperiul Seleucid' }
+    };
+
+    function setLang(lang) {
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        for (let key in translations[lang]) {
+            const elements = document.querySelectorAll(`[data-key="${key}"]`);
+            elements.forEach(el => el.innerText = translations[lang][key]);
+        }
+    }
+
+    function openTab(evt, tabName) {
+        const sections = document.getElementsByClassName("content-section");
+        for (let i = 0; i < sections.length; i++) sections[i].classList.remove("active");
+        const tabBtns = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tabBtns.length; i++) tabBtns[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    function toggleGlossary(btn) {
+        const content = btn.nextElementSibling;
+        content.style.display = (content.style.display === "block") ? "none" : "block";
+    }
+</script>
+
+</body>
+</html>
