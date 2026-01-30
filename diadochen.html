@@ -1,0 +1,83 @@
+import streamlit as st
+import os
+import subprocess
+from datetime import datetime
+import qrcode
+from io import BytesIO
+
+# 1. SETUP
+st.set_page_config(page_title="Titanium Katalogisierer", layout="wide")
+
+# KONFIGURATION
+BASE_PATH = r"D:\Lernseitengenerator\Output\Lernseiten"
+GITHUB_USER = "sprnk1"
+GITHUB_REPO = "Lernseiten"
+
+def run_git_commands(repo_path, commit_message):
+    """Git-Automatisierung mit erzwungenem Push."""
+    try:
+        subprocess.run(["git", "add", "."], cwd=repo_path, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "--allow-empty", "-m", commit_message], cwd=repo_path, check=True, capture_output=True)
+        subprocess.run(["git", "push", "-f", "origin", "main"], cwd=repo_path, check=True, capture_output=True)
+        return True, "Push erfolgreich!"
+    except Exception as e:
+        return False, str(e)
+
+# 2. UI - SIDEBAR
+with st.sidebar:
+    st.header("🏫 Unterrichts-Details")
+    # Wir erfassen die Daten, aber für die URL nutzen wir nur das Thema
+    fach = st.selectbox("Fach", ["Erdkunde", "Geschichte", "Politik", "Englisch", "Französisch"])
+    klasse = st.selectbox("Klasse", [str(i) for i in range(5, 11)], index=2)
+    thema = st.text_input("Thema", value="Diadochen")
+    st.divider()
+    st.link_button("🤖 Zum Gemini Sparringspartner", "https://gemini.google.com/gem/30b693f9682a", use_container_width=True)
+
+# 3. UI - HAUPTBEREICH
+st.title("📂 Titanium Code-Katalogisierer")
+raw_input = st.text_area("HTML-Code hier einfügen:", height=350)
+
+# URL-FIX: Wir speichern die Datei DIREKT im Hauptordner als thema.html
+# Das umgeht alle Unterordner-Probleme bei GitHub Pages
+safe_name = thema.replace(" ", "_").lower()
+file_name = f"{safe_name}.html"
+full_file_path = os.path.join(BASE_PATH, file_name)
+
+if st.button("🚀 Speichern & Live bringen", type="primary", use_container_width=True):
+    if not raw_input:
+        st.warning("Bitte erst Code einfügen!")
+    else:
+        try:
+            # Speichere die Datei direkt im Root-Verzeichnis des Repos
+            with open(full_file_path, "w", encoding="utf-8") as f:
+                f.write(raw_input)
+            
+            with st.spinner("📤 Übertrage zu GitHub..."):
+                timestamp = datetime.now().strftime("%H:%M:%S")
+                success, msg = run_git_commands(BASE_PATH, f"Release: {thema} ({timestamp})")
+                
+                if success:
+                    st.balloons()
+                    # Der neue Link ist jetzt flach und sicher
+                    web_link = f"https://{GITHUB_USER}.github.io/{GITHUB_REPO}/{file_name}"
+                    
+                    st.success("✅ Veröffentlicht!")
+                    st.divider()
+                    
+                    c1, c2 = st.columns([2, 1])
+                    with c1:
+                        st.subheader("🔗 Direkter Schüler-Link:")
+                        st.code(web_link)
+                        st.markdown(f"### [👉 HIER KLICKEN ZUM TESTEN]({web_link})")
+                        st.info("💡 WICHTIG: Wenn 404 kommt, drücke Strg+F5 oder teste den Link am Handy (WLAN aus).")
+                    
+                    with col2:
+                        st.subheader("📱 QR-Code:")
+                        qr_img = qrcode.make(web_link)
+                        buf = BytesIO()
+                        qr_img.save(buf)
+                        st.image(buf.getvalue(), width=200)
+                else:
+                    st.error(f"Git-Fehler: {msg}")
+        except Exception as e:
+            st.error(f"System-Fehler: {e}")
