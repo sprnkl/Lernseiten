@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Diadochenstaaten - Geschichte Klasse 10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            scroll-behavior: smooth;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glossary-content {
+            display: none;
+        }
+
+        .glossary-content.open {
+            display: block;
+        }
+
+        .ipad-touch-area {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
+</head>
+<body class="pb-12">
+
+    <!-- Header & Language -->
+    <header class="bg-slate-900 text-white p-6 shadow-lg">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight" id="main-title">Die Diadochenstaaten: Das Erbe Alexanders</h1>
+            <div class="flex gap-2" id="lang-switch">
+                <button onclick="setLanguage('de')" class="p-2 hover:scale-110 transition rounded bg-slate-800" title="Deutsch">🇩🇪</button>
+                <button onclick="setLanguage('en')" class="p-2 hover:scale-110 transition rounded bg-slate-800" title="English">🇺🇸</button>
+                <button onclick="setLanguage('ru')" class="p-2 hover:scale-110 transition rounded bg-slate-800" title="Русский">🇷🇺</button>
+                <button onclick="setLanguage('ar')" class="p-2 hover:scale-110 transition rounded bg-slate-800" title="العربية">🇸🇦</button>
+                <button onclick="setLanguage('ro')" class="p-2 hover:scale-110 transition rounded bg-slate-800" title="Română">🇷🇴</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="sticky-nav shadow-sm">
+        <div class="container mx-auto overflow-x-auto">
+            <div class="flex whitespace-nowrap px-4 py-2 space-x-6">
+                <button onclick="showTab('g1')" class="tab-btn active py-3 px-2 text-lg ipad-touch-area" id="nav-g1">Gruppe 1</button>
+                <button onclick="showTab('g2')" class="tab-btn py-3 px-2 text-lg ipad-touch-area" id="nav-g2">Gruppe 2</button>
+                <button onclick="showTab('g3')" class="tab-btn py-3 px-2 text-lg ipad-touch-area" id="nav-g3">Gruppe 3</button>
+                <button onclick="showTab('g4')" class="tab-btn py-3 px-2 text-lg ipad-touch-area" id="nav-g4">Gruppe 4</button>
+                <button onclick="showTab('g5')" class="tab-btn py-3 px-2 text-lg ipad-touch-area" id="nav-g5">Gruppe 5</button>
+                <button onclick="showTab('tips')" class="tab-btn py-3 px-2 text-lg ipad-touch-area font-semibold text-blue-600" id="nav-tips">Präsentations-Tipps</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 mt-8 max-w-5xl">
+
+        <!-- Gruppe 1: Der Zerfall -->
+        <section id="g1" class="content-section active">
+            <div class="bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800">Gruppe 1: Das Vakuum – Tod Alexanders und die Teilungen</h2>
+                <div class="prose prose-slate max-w-none text-lg leading-relaxed">
+                    <p class="mb-4">Als Alexander der Große im Juni 323 v. Chr. in Babylon ohne einen benannten Erben verstarb, hinterließ er ein Weltreich, das sich von der Adria bis zum Indus erstreckte. Dieses riesige Territorium besaß keine gefestigten Verwaltungsstrukturen, sondern wurde allein durch die charismatische Autorität des Königs zusammengehalten. Da sein Sohn Alexander IV. erst nach seinem Tod geboren wurde und sein Halbbruder Philipp III. Arrhidaios als geistig eingeschränkt galt, entstand ein gefährliches Machtvakuum. Sofort begannen die engsten Generäle und Gefährten Alexanders, die sogenannten "Diadochen" (Nachfolger), über die Zukunft des Reiches zu verhandeln. In der <b>Babylonischen Reichsteilung</b> wurde zunächst versucht, die Einheit formal zu wahren. Perdikkas wurde zum Regenten ernannt, doch die Zentrifugalkräfte waren zu stark.</p>
+                    <p class="mb-4">Die Interessen der Generäle prallten frontal aufeinander: Während einige die Einheit des Reiches unter einer starken Zentralgewalt bewahren wollten, strebten andere nach unabhängigen Herrschaftsbereichen in den Provinzen. Dies führte zu einer Serie blutiger Konflikte, den Diadochenkriegen. Ein entscheidender Wendepunkt war die Konferenz von <b>Triparadeisos (321 v. Chr.)</b>, bei der das Reich erneut aufgeteilt wurde. Hier zeigte sich bereits, dass die Satrapien (Provinzen) zu eigenständigen Machtzentren mutierten. Die Loyalität der Truppen galt nun nicht mehr dem fernen Königshaus der Argeaden, sondern dem jeweiligen General, der ihnen Sold und Beute versprach.</p>
+                    <p class="mb-4">Die Kriege dauerten Jahrzehnte an und zerstörten die Vision eines einheitlichen "Pangriechischen" Reiches. Die Diadochen nahmen schließlich nacheinander den Königstitel (Basileus) an, was das formale Ende des Einheitsreiches markierte. Die Ursache für den Zerfall lag nicht nur im Ehrgeiz der Individuen, sondern auch in der Unmöglichkeit, ein so heterogenes Gebiet ohne moderne Kommunikation und Verwaltung dauerhaft von einem Zentrum aus zu steuern. Die Wirkung war jedoch gewaltig: Aus dem Trümmerhaufen des Alexanderreiches entstanden die hellenistischen Großreiche, die das Gesicht des Mittelmeerraums und Vorderasiens für Jahrhunderte prägen sollten.</p>
+                </div>
+
+                <div class="mt-8">
+                    <button onclick="toggleGlossary('gl1')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition w-full md:w-auto" data-translate="btn-glossary">Schwierige Wörter erklären</button>
+                    <div id="gl1" class="glossary-content mt-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                        <ul class="space-y-3">
+                            <li><strong>Diadochen:</strong> Die "Nachfolger" Alexanders, meist seine Generäle.</li>
+                            <li><strong>Satrapie:</strong> Eine Verwaltungseinheit oder Provinz im antiken Perserreich und bei Alexander.</li>
+                            <li><strong>Argeaden:</strong> Das mazedonische Königshaus, dem Alexander angehörte.</li>
+                            <li><strong>Regent:</strong> Jemand, der stellvertretend für einen Herrscher die Regierungsgeschäfte führt.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" data-translate="header-tasks">
+                        <span>📝</span> Eure Aufgaben
+                    </h3>
+                    <ul class="list-decimal list-inside space-y-3 text-lg">
+                        <li>Erstellt einen Zeitstrahl der Ereignisse von 323 bis 301 v. Chr.</li>
+                        <li>Analysiert die Gründe, warum eine Einheit des Reiches scheitern musste.</li>
+                        <li>Diskutiert, welche Rolle die fehlende Nachfolgeregelung für den Ausbruch der Kriege spielte.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-3" data-translate="header-links">Recherche-Quellen:</h3>
+                    <ul class="text-blue-600 space-y-1 underline">
+                        <li><a href="https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/das-reich-alexanders-des-grossen-und-seine-teilung" target="_blank">Lernhelfer: Die Reichsteilung</a></li>
+                        <li><a href="https://www.planet-wissen.de/geschichte/antike/alexander_der_grosse/index.html" target="_blank">Planet Wissen: Alexander & Nachfolge</a></li>
+                        <li><a href="https://klexikon.zum.de/wiki/Alexander_der_Gro%C3%9Fe" target="_blank">Klexikon: Alexander</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gruppe 2: Antigoniden -->
+        <section id="g2" class="content-section">
+            <div class="bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800">Gruppe 2: Das Kernland – Mazedonien und die Antigoniden</h2>
+                <div class="prose prose-slate max-w-none text-lg leading-relaxed">
+                    <p class="mb-4">Mazedonien war der Ausgangspunkt des Alexanderzuges und blieb für viele Diadochen der symbolische Preis. Wer Mazedonien beherrschte, hatte Zugriff auf die mazedonische Phalanx, die Elitetruppen der Zeit, und galt als legitimer Nachfolger auf dem Thron der Ahnen. Doch gerade dieses Kernland war hart umkämpft. Die Dynastie der Antigoniden, begründet durch <b>Antigonos I. Monophthalmos</b> ("der Einäugige"), versuchte am längsten, das Gesamtreich wiederherzustellen. Antigonos war eine imposante Gestalt, der fast alle anderen Diadochen gegen sich aufbrachte, weil er keine Teilung akzeptieren wollte. Sein Ziel war die Krone des ungeteilten Alexanderreiches.</p>
+                    <p class="mb-4">Dies führte 301 v. Chr. zur gigantischen <b>Schlacht von Ipsos</b>, der größten Schlacht der Diadochenzeit. Eine Koalition aus Seleukos, Lysimachos und Kassander trat gegen Antigonos und seinen Sohn Demetrios an. Antigonos fiel im Kampf, und seine Vision eines Einheitsreiches starb mit ihm. Sein Sohn Demetrios I. Poliorketes ("der Städtebelagerer") irrte jahrelang als König ohne Land umher, bevor es seinem Sohn Antigonos II. Gonatas gelang, die Herrschaft über Mazedonien dauerhaft zu stabilisieren. Die Antigoniden mussten sich fortan als mazedonische Nationalkönige definieren, die gleichzeitig versuchten, die griechischen Stadtstaaten (Poleis) unter ihrer Kontrolle zu halten.</p>
+                    <p class="mb-4">Das Verhältnis zu Griechenland war das zentrale Problem der Antigoniden. Während sie die Freiheit der Griechen proklamierten, stationierten sie gleichzeitig Garnisonen in strategischen Festungen wie Korinth. Die griechischen Poleis reagierten mit der Gründung von Bünden (Achaier- und Aitolerbund), um sich der mazedonischen Vorherrschaft zu widersetzen. Mazedonien selbst veränderte sich: Von einer halb-barbarischen Randregion entwickelte es sich unter den Antigoniden zu einem hoch-hellenisierten Kulturzentrum, blieb aber militärisch durch ständige Kämpfe im Norden gegen Kelten und im Süden gegen die Griechen geschwächt. Letztlich war es dieses geschwächte Mazedonien, das im 2. Jahrhundert v. Chr. als erstes der neuen Weltmacht Rom gegenüberstand.</p>
+                </div>
+
+                <div class="mt-8">
+                    <button onclick="toggleGlossary('gl2')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition w-full md:w-auto" data-translate="btn-glossary">Schwierige Wörter erklären</button>
+                    <div id="gl2" class="glossary-content mt-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                        <ul class="space-y-3">
+                            <li><strong>Phalanx:</strong> Eine geschlossene Infanterieformation, bewaffnet mit langen Lanzen (Sarissen).</li>
+                            <li><strong>Dynastie:</strong> Eine Abfolge von Herrschern aus derselben Familie.</li>
+                            <li><strong>Garnison:</strong> Truppen, die an einem festen Ort stationiert sind.</li>
+                            <li><strong>Poliorketes:</strong> Beiname des Demetrios, bedeutet "Städtebelagerer".</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" data-translate="header-tasks">
+                        <span>📝</span> Eure Aufgaben
+                    </h3>
+                    <ul class="list-decimal list-inside space-y-3 text-lg">
+                        <li>Erklärt die strategische Bedeutung Mazedoniens für die Diadochen.</li>
+                        <li>Untersucht die Auswirkungen der Schlacht von Ipsos auf die Geografie des Reiches.</li>
+                        <li>Bewertet die Herrschaftsmethoden der Antigoniden gegenüber den griechischen Städten.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-3" data-translate="header-links">Recherche-Quellen:</h3>
+                    <ul class="text-blue-600 space-y-1 underline">
+                        <li><a href="https://www.kinderzeitmaschine.de/antike/griechenland/ereignisse/hellenismus/schlacht-von-ipsos/" target="_blank">Kinderzeitmaschine: Die Schlacht von Ipsos</a></li>
+                        <li><a href="https://www.br.de/radio/bayern2/sendungen/radiowissen/geschichte/hellenismus-alexander-grosser-100.html" target="_blank">Bayern 2: Hellenismus & Nachfolge</a></li>
+                        <li><a href="https://de.wikipedia.org/wiki/Antigoniden" target="_blank">Wikipedia: Antigoniden (Hintergrund)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gruppe 3: Ptolemäer -->
+        <section id="g3" class="content-section">
+            <div class="bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800">Gruppe 3: Das Reich am Nil – Die Ptolemäer in Ägypten</h2>
+                <div class="prose prose-slate max-w-none text-lg leading-relaxed">
+                    <p class="mb-4">Ptolemaios I., ein kluger Stratege und enger Freund Alexanders, sicherte sich bereits bei der ersten Teilung Ägypten – eine Provinz, die leicht zu verteidigen und durch den Nil extrem wohlhabend war. Er erkannte früh, dass die Einheit des Alexanderreiches nicht zu halten war, und konzentrierte sich darauf, seine Herrschaft in Ägypten zu legitimieren. Sein genialster Schachzug war der Diebstahl des Leichnams Alexanders, den er nach Ägypten entführte und dort bestattete. Damit machte er sein Reich zum spirituellen Zentrum des Hellenismus. Die Ptolemäer regierten fast 300 Jahre lang, bis zum Tod der berühmten Kleopatra VII. im Jahr 30 v. Chr.</p>
+                    <p class="mb-4">Die ptolemäische Herrschaft zeichnete sich durch eine faszinierende kulturelle Doppelnatur aus. Gegenüber den Griechen traten sie als hellenistische Könige (Basileus) auf, gründeten die Metropole <b>Alexandria</b> und förderten Wissenschaft und Kunst in der berühmten Bibliothek und dem Museion. Gegenüber der ägyptischen Bevölkerung agierten sie als traditionelle <b>Pharaonen</b>. Sie bauten Tempel im ägyptischen Stil (z.B. in Edfu) und ließen sich als Götter verehren. Diese Symbiose war notwendig, um das fruchtbare Nil-Land stabil zu verwalten, doch die Führungsschicht blieb weitgehend griechisch-makedonisch, während die Ägypter die ökonomische Basis durch harte landwirtschaftliche Arbeit und hohe Steuern lieferten.</p>
+                    <p class="mb-4">Ökonomisch war das Ptolemäerreich ein hochgradig organisierter Staat mit einem strengen Staatsmonopol auf Öl, Papier (Papyrus) und Getreide. Alexandria wurde zum größten Handelsplatz der antiken Welt und zum Leuchtturm der Gelehrsamkeit. Der <b>Pharos von Alexandria</b>, eines der sieben Weltwunder, symbolisierte die Macht und den Fortschritt dieser Dynastie. Dennoch führten ständige Kriege gegen die Seleukiden um die Region Syrien ("Syrische Kriege") und interne Familienstreitigkeiten zu einem schleichenden Niedergang, der schließlich in der Abhängigkeit von Rom mündete. Die ptolemäische Zeit war die Blütezeit der antiken Wissenschaft, in der Eratosthenes den Erdumfang berechnete und die Grundlagen der modernen Geometrie gelegt wurden.</p>
+                </div>
+
+                <div class="mt-8">
+                    <button onclick="toggleGlossary('gl3')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition w-full md:w-auto" data-translate="btn-glossary">Schwierige Wörter erklären</button>
+                    <div id="gl3" class="glossary-content mt-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                        <ul class="space-y-3">
+                            <li><strong>Pharao:</strong> Titel der altägyptischen Könige, der von den Ptolemäern übernommen wurde.</li>
+                            <li><strong>Basileus:</strong> Griechisches Wort für "König".</li>
+                            <li><strong>Museion:</strong> Forschungsstätte in Alexandria (Ursprung des Wortes Museum).</li>
+                            <li><strong>Monopol:</strong> Alleiniges Recht auf Herstellung oder Verkauf einer Ware.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" data-translate="header-tasks">
+                        <span>📝</span> Eure Aufgaben
+                    </h3>
+                    <ul class="list-decimal list-inside space-y-3 text-lg">
+                        <li>Beschreibt, wie Ptolemaios I. seine Macht in Ägypten legitimierte.</li>
+                        <li>Vergleicht die Rolle der Ptolemäer als "Pharaonen" und als "griechische Könige".</li>
+                        <li>Erläutert die Bedeutung Alexandrias als wissenschaftliches Zentrum.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-3" data-translate="header-links">Recherche-Quellen:</h3>
+                    <ul class="text-blue-600 space-y-1 underline">
+                        <li><a href="https://www.planet-wissen.de/geschichte/antike/alexander_der_grosse/alexandria-zentrum-der-antike-100.html" target="_blank">Planet Wissen: Alexandria</a></li>
+                        <li><a href="https://www.zdf.de/dokumentation/terra-x/die-bibliothek-von-alexandria-102.html" target="_blank">Terra X: Die Bibliothek von Alexandria</a></li>
+                        <li><a href="https://klexikon.zum.de/wiki/%C3%84gypten" target="_blank">Klexikon: Geschichte Ägyptens</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gruppe 4: Seleukiden -->
+        <section id="g4" class="content-section">
+            <div class="bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800">Gruppe 4: Das Riesenreich – Die Seleukiden in Asien</h2>
+                <div class="prose prose-slate max-w-none text-lg leading-relaxed">
+                    <p class="mb-4">Das Reich des Seleukos I. Nicator war flächenmäßig das größte der Diadochenreiche. Es erstreckte sich von Kleinasien und Syrien über Mesopotamien und Persien bis an die Grenzen Indiens. Seleukos, der einzige Diadoche, der seine persische Frau nach Alexanders Tod nicht verstieß, verfolgte die Vision einer Verschmelzung der Kulturen am konsequentesten. Die Seleukiden standen vor der gewaltigen Aufgabe, dieses extrem heterogene Gebiet mit hunderten Völkern, Sprachen und Religionen zusammenzuhalten. Ihre Lösung war eine massive <b>Städtegründungspolitik</b>. Überall im Reich entstanden Städte nach griechischem Vorbild (wie Seleukeia am Tigris oder Antiochia am Orontes), die als Zentren der Verwaltung und der Hellenisierung dienten.</p>
+                    <p class="mb-4">Diese Städte waren Inseln griechischer Kultur in einem asiatischen Ozean. Hier gab es Gymnasien, Theater und griechische Rechtsordnungen. Die Seleukiden förderten den Handel über die Seidenstraße und schufen eine wirtschaftliche Brücke zwischen dem Mittelmeer und dem Fernen Osten. Doch die schiere Größe des Reiches war auch seine Schwäche. In den Randgebieten, insbesondere in Baktrien (Zentralasien) und Parthien (Iran), kam es früh zu Abspaltungstendenzen. Die parthischen Reiterkrieger entwickelten sich zu den gefährlichsten Rivalen der Seleukiden und eroberten nach und nach die östlichen Provinzen zurück.</p>
+                    <p class="mb-4">Kulturell war das Seleukidenreich ein Schmelztiegel. Während die Oberschicht griechisch sprach, blieben lokale Traditionen und Religionen (wie der Zoroastrismus in Persien oder das Judentum in Judäa) lebendig. Der Versuch von Antiochos IV., die griechische Kultur im Tempel von Jerusalem gewaltsam durchzusetzen, führte zum berühmten Makkabäeraufstand – ein Zeichen für die Grenzen der Hellenisierung. Trotz des langsamen Zerfalls hinterließen die Seleukiden ein bleibendes Erbe: Die griechische Sprache (Koine) wurde zur Verkehrssprache (Lingua Franca) des Orients, was später die Ausbreitung des Christentums erst ermöglichte. Das Seleukidenreich war das erste echte Weltreich, das versuchte, westliche Strukturen tief nach Asien zu tragen.</p>
+                </div>
+
+                <div class="mt-8">
+                    <button onclick="toggleGlossary('gl4')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition w-full md:w-auto" data-translate="btn-glossary">Schwierige Wörter erklären</button>
+                    <div id="gl4" class="glossary-content mt-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                        <ul class="space-y-3">
+                            <li><strong>Hellenisierung:</strong> Die Ausbreitung der griechischen Sprache, Kultur und Lebensweise.</li>
+                            <li><strong>Heterogen:</strong> Vielfältig, unterschiedlich zusammengesetzt.</li>
+                            <li><strong>Lingua Franca:</strong> Eine gemeinsame Verkehrssprache zwischen Menschen verschiedener Muttersprachen.</li>
+                            <li><strong>Schmelztiegel:</strong> Ein Ort oder eine Situation, in der viele verschiedene Kulturen verschmelzen.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" data-translate="header-tasks">
+                        <span>📝</span> Eure Aufgaben
+                    </h3>
+                    <ul class="list-decimal list-inside space-y-3 text-lg">
+                        <li>Erörtert die Funktion der Städtegründungen im Seleukidenreich.</li>
+                        <li>Analysiert die Herausforderungen, die sich aus der Größe und Vielfalt des Reiches ergaben.</li>
+                        <li>Bewertet das Erbe der Seleukiden für die spätere Geschichte des Orients.</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-3" data-translate="header-links">Recherche-Quellen:</h3>
+                    <ul class="text-blue-600 space-y-1 underline">
+                        <li><a href="https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/hellenismus" target="_blank">Lernhelfer: Hellenismus im Osten</a></li>
+                        <li><a href="https://www.hellenicaworld.com/Greece/History/de/Seleukidenreich.html" target="_blank">Hellenic World: Das Seleukidenreich</a></li>
+                        <li><a href="https://www.welt.de/geschichte/article165243162/Dieser-Koenig-war-Alexanders-erfolgreichster-Erbe.html" target="_blank">Die Welt: Seleukos - Der Erbe</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gruppe 5: Hellenismus & Kultur -->
+        <section id="g5" class="content-section">
+            <div class="bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800">Gruppe 5: Weltkultur – Die Wirkung des Hellenismus</h2>
+                <div class="prose prose-slate max-w-none text-lg leading-relaxed">
+                    <p class="mb-4">Der Begriff "Hellenismus", geprägt vom Historiker Johann Gustav Droysen, bezeichnet die Epoche vom Tod Alexanders (323 v. Chr.) bis zur römischen Eroberung Ägyptens (30 v. Chr.). Es war eine Zeit der Globalisierung in der Antike. Die griechische Kultur verlor ihren rein lokalen Charakter der Stadtstaaten (Polis) und wurde zu einer Weltkultur. Menschen fühlten sich nun nicht mehr primär als Bürger von Athen oder Sparta, sondern als <b>Kosmopoliten</b> (Weltbürger). Die griechische Sprache entwickelte sich zur <b>Koine</b>, einer vereinfachten Form, die vom Mittelmeer bis nach Indien verstanden wurde. Dies ermöglichte einen beispiellosen Austausch von Ideen, Waren und religiösen Vorstellungen.</p>
+                    <p class="mb-4">In der Kunst entstand ein neuer Realismus. Statt idealisierter Götterstatuen bildeten Bildhauer nun Emotionen, Alter und Schmerz ab (z.B. die Laokoon-Gruppe). Die Architektur wurde monumental, wie der Altar von Pergamon zeigt. Auch die Philosophie wandelte sich: Statt über den idealen Staat nachzudenken, suchten Denker wie die Epikureer und Stoiker nach individuellem Glück und innerer Ruhe in einer unsicher gewordenen Welt. Die Wissenschaft erlebte eine erste "Aufklärung". In Alexandria, Syrakus und Antiochia wurden mathematische, astronomische und medizinische Entdeckungen gemacht, die erst in der frühen Neuzeit übertroffen wurden (z.B. Archimedes, Aristarch von Samos).</p>
+                    <p class="mb-4">Ein zentrales Merkmal des Hellenismus war der <b>Synkretismus</b> – die Vermischung von Religionen. Griechische Götter wurden mit ägyptischen oder persischen Gottheiten gleichgesetzt (z.B. Sarapis). Diese kulturelle Offenheit und die gemeinsame Sprache bildeten das Fundament, auf dem das Römische Reich später aufbaute. Ohne den Hellenismus wäre die römische Zivilisation und damit auch das christliche Abendland in dieser Form nicht denkbar gewesen. Der Hellenismus zeigt uns, wie durch Migration, Eroberung und Handel eine neue, vernetzte Welt entstehen kann, die nationale Grenzen überschreitet, aber auch Spannungen zwischen Tradition und Moderne erzeugt.</p>
+                </div>
+
+                <div class="mt-8">
+                    <button onclick="toggleGlossary('gl5')" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-blue-700 transition w-full md:w-auto" data-translate="btn-glossary">Schwierige Wörter erklären</button>
+                    <div id="gl5" class="glossary-content mt-4 p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                        <ul class="space-y-3">
+                            <li><strong>Kosmopolit:</strong> Ein Weltbürger, der sich überall zu Hause fühlt.</li>
+                            <li><strong>Koine:</strong> Die allgemeine griechische Umgangssprache der hellenistischen Zeit.</li>
+                            <li><strong>Synkretismus:</strong> Die Vermischung verschiedener Religionen oder Philosophien.</li>
+                            <li><strong>Stoa / Epikureismus:</strong> Bedeutende philosophische Schulen des Hellenismus.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-xl">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" data-translate="header-tasks">
+                        <span>📝</span> Eure Aufgaben
+                    </h3>
+                    <ul class="list-decimal list-inside space-y-3 text-lg">
+                        <li>Definiert den Begriff "Hellenismus" mit eigenen Worten.</li>
+                        <li>Nennt drei wissenschaftliche oder künstlerische Errungenschaften dieser Zeit.</li>
+                        <li>Diskutiert die Vor- und Nachteile der kulturellen Vermischung (Synkretismus).</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-3" data-translate="header-links">Recherche-Quellen:</h3>
+                    <ul class="text-blue-600 space-y-1 underline">
+                        <li><a href="https://www.bpb.de/kurz-knapp/lexika/politiklexikon/17608/hellenismus/" target="_blank">BPB: Hellenismus Lexikon</a></li>
+                        <li><a href="https://www.br.de/radio/bayern2/sendungen/radiowissen/geschichte/hellenismus-alexander-grosser-100.html" target="_blank">Radio Wissen: Die Epoche des Hellenismus</a></li>
+                        <li><a href="https://klexikon.zum.de/wiki/Hellenismus" target="_blank">Klexikon: Hellenismus</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Präsentations-Tipps -->
+        <section id="tips" class="content-section">
+            <div class="bg-white rounded-2xl shadow-md p-8 border-t-8 border-blue-500">
+                <h2 class="text-3xl font-bold mb-6 text-slate-800" id="tips-title">PowerPoint & Keynote auf dem iPad</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4 text-blue-700">Design & Layout</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Weniger ist mehr:</strong> Maximal 5-7 Stichpunkte pro Folie.</li>
+                            <li><strong>Bildwirkung:</strong> Nutze hochwertige Bilder von Karten oder antiken Statuen.</li>
+                            <li><strong>Kontrast:</strong> Dunkler Text auf hellem Grund ist auf Schul-Beamern am besten lesbar.</li>
+                            <li><strong>iPad-Vorteil:</strong> Nutze den Apple Pencil für handschriftliche Anmerkungen in der Live-Präsentation.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4 text-blue-700">Interaktion & Technik</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Split View:</strong> Nutze auf dem iPad die geteilte Ansicht, um während der Erstellung diese Website und Keynote gleichzeitig offen zu haben.</li>
+                            <li><strong>AirPlay:</strong> Testet vorher die Verbindung zum Apple TV oder Beamer.</li>
+                            <li><strong>Animationen:</strong> Nutze "Zauberei" (Keynote) für flüssige Übergänge bei Kartenveränderungen.</li>
+                            <li><strong>Handout:</strong> Erstellt einen QR-Code, der zu eurer Quellenliste führt.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-8 p-6 bg-green-50 rounded-xl border border-green-200">
+                    <h3 class="text-xl font-bold mb-2 text-green-800">Checkliste für eure Gruppe:</h3>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-2"><input type="checkbox"> Haben wir alle Fachbegriffe aus dem Glossar erklärt?</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Ist unsere Karte des Reiches aktuell und beschriftet?</label>
+                        <label class="flex items-center gap-2"><input type="checkbox"> Haben wir eine spannende Einstiegsfrage für die Klasse?</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Translation Data
+        const translations = {
+            de: {
+                "main-title": "Die Diadochenstaaten: Das Erbe Alexanders",
+                "nav-g1": "Gruppe 1",
+                "nav-g2": "Gruppe 2",
+                "nav-g3": "Gruppe 3",
+                "nav-g4": "Gruppe 4",
+                "nav-g5": "Gruppe 5",
+                "nav-tips": "Präsentations-Tipps",
+                "btn-glossary": "Schwierige Wörter erklären",
+                "header-tasks": "Eure Aufgaben",
+                "header-links": "Recherche-Quellen:",
+                "tips-title": "PowerPoint & Keynote auf dem iPad"
+            },
+            en: {
+                "main-title": "The Diadochi States: Alexander's Legacy",
+                "nav-g1": "Group 1",
+                "nav-g2": "Group 2",
+                "nav-g3": "Group 3",
+                "nav-g4": "Group 4",
+                "nav-g5": "Group 5",
+                "nav-tips": "Presentation Tips",
+                "btn-glossary": "Explain difficult words",
+                "header-tasks": "Your Tasks",
+                "header-links": "Research Sources:",
+                "tips-title": "PowerPoint & Keynote on iPad"
+            },
+            ru: {
+                "main-title": "Государства Диадохов: Наследие Александра",
+                "nav-g1": "Группа 1",
+                "nav-g2": "Группа 2",
+                "nav-g3": "Группа 3",
+                "nav-g4": "Группа 4",
+                "nav-g5": "Группа 5",
+                "nav-tips": "Советы по презентации",
+                "btn-glossary": "Объяснить сложные слова",
+                "header-tasks": "Ваши задачи",
+                "header-links": "Источники для поиска:",
+                "tips-title": "PowerPoint и Keynote на iPad"
+            },
+            ar: {
+                "main-title": "دول ملوك طوائف الإسكندر: إرث الإسكندر",
+                "nav-g1": "المجموعة 1",
+                "nav-g2": "المجموعة 2",
+                "nav-g3": "المجموعة 3",
+                "nav-g4": "المجموعة 4",
+                "nav-g5": "المجموعة 5",
+                "nav-tips": "نصائح التقديم",
+                "btn-glossary": "شرح الكلمات الصعبة",
+                "header-tasks": "مهامكم",
+                "header-links": "مصادر البحث:",
+                "tips-title": "باوربوينت وكينوت على الآيباد"
+            },
+            ro: {
+                "main-title": "Statele Diadohilor: Moștenirea lui Alexandru",
+                "nav-g1": "Grupul 1",
+                "nav-g2": "Grupul 2",
+                "nav-g3": "Grupul 3",
+                "nav-g4": "Grupul 4",
+                "nav-g5": "Grupul 5",
+                "nav-tips": "Sfaturi pentru prezentare",
+                "btn-glossary": "Explică cuvintele dificile",
+                "header-tasks": "Sarcinile voastre",
+                "header-links": "Surse de cercetare:",
+                "tips-title": "PowerPoint și Keynote pe iPad"
+            }
+        };
+
+        // Navigation Function
+        function showTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected section
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update Tab Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Scroll to top of content
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Glossary Toggle
+        function toggleGlossary(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('open');
+        }
+
+        // Language Switcher
+        function setLanguage(lang) {
+            const dict = translations[lang];
+            for (let id in dict) {
+                const el = document.getElementById(id);
+                if (el) el.innerText = dict[id];
+            }
+
+            // Also update all dynamic elements with data-translate
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (dict[key]) {
+                    if (el.tagName === 'SPAN' || el.tagName === 'BUTTON' || el.tagName === 'H3') {
+                        // Preserve emoji spans if present
+                        if (el.querySelector('span')) {
+                            el.childNodes[el.childNodes.length - 1].textContent = " " + dict[key];
+                        } else {
+                            el.innerText = dict[key];
+                        }
+                    } else {
+                        el.innerText = dict[key];
+                    }
+                }
+            });
+
+            // Handle RTL for Arabic
+            document.body.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        }
+
+        // Initialize
+        window.onload = () => {
+            console.log("Lernseite geladen. Viel Erfolg beim Recherchieren!");
+        };
+    </script>
+</body>
+</html>
