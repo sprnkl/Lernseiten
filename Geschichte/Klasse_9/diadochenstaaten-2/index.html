@@ -1,384 +1,169 @@
-import React, { useState } from 'react';
-import { Book, Globe, Map, Users, Info, HelpCircle, Image as ImageIcon, Loader2, ExternalLink, MessageSquare, Lightbulb, AlertCircle, CheckCircle2 } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diadochen Projekt - GOBS Lindern</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #f1f5f9; }
+        .tab-shadow { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'diadochen-projekt';
-const apiKey = ""; 
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-const App = () => {
-  const [activeTab, setActiveTab] = useState('intro');
-  const [generatedImages, setGeneratedImages] = useState({});
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('intro');
+            const [generatedImages, setGeneratedImages] = useState({});
+            const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateImage = async (prompt, key) => {
-    if (generatedImages[key]) return;
-    setIsGenerating(true);
-    setErrorMessage(null);
+            // Inhalts-Daten aus deinem Code
+            const content = {
+                intro: {
+                    title: "Drei Gruppen – Drei Reiche",
+                    subtitle: "Ein Erbe von Alexander dem Großen",
+                    text: "Nachdem Alexander der Große gestorben war, wurde sein riesiges Reich unter seinen Generälen aufgeteilt. Ihr sollt nun in euren Gruppen eines dieser Reiche genau untersuchen und vorstellen.",
+                    tasks: ["Beantwortet die Fragen zu eurem Reich.", "Sucht passende Bilder oder Karten.", "Erstellt ein Plakat oder eine Präsentation."],
+                    vocabulary: [
+                        { word: "Hellenismus", def: "Die Zeit, in der griechische Sprache und Kultur in vielen Ländern wichtig wurden." },
+                        { word: "Diadochen", def: "Die Nachfolger von Alexander (seine Generäle)." }
+                    ]
+                },
+                ptolemaeer: {
+                    title: "Das Ptolemäerreich",
+                    location: "Ägypten, Hauptstadt: Alexandria",
+                    questions: [
+                        "Wer war der allererste Herrscher in eurem Reich?",
+                        "In welchem Jahr wurde das Reich gegründet?",
+                        "Was machte die Stadt Alexandria so besonders und berühmt?",
+                        "Was passierte in der berühmten Bibliothek von Alexandria?",
+                        "Welche berühmten Personen kennt man heute noch? (z.B. Kleopatra)"
+                    ],
+                    links: [{ label: "Wikipedia: Ptolemäer", url: "https://de.wikipedia.org/wiki/Ptolem%C3%A4erreich" }],
+                    vocabulary: [
+                        { word: "Pharos", def: "Der riesige Leuchtturm vor Alexandria." },
+                        { word: "Dynastie", def: "Eine Herrscherfamilie." }
+                    ]
+                },
+                seleukiden: {
+                    title: "Das Seleukidenreich",
+                    location: "Mesopotamien, Persien, Teile Indiens",
+                    questions: [
+                        "Welche Länder gehörten zu eurem Reich?",
+                        "Wer war Seleukos?",
+                        "Warum war es so extrem schwierig, dieses riesige Reich zu regieren?",
+                        "Warum war die Seidenstraße so wichtig?"
+                    ],
+                    links: [{ label: "Wikipedia: Seleukiden", url: "https://de.wikipedia.org/wiki/Seleukidenreich" }]
+                },
+                antigoniden: {
+                    title: "Das Antigonidenreich",
+                    location: "Griechenland & Mazedonien",
+                    questions: [
+                        "Was hatte euer Reich direkt mit Alexander dem Großen zu tun?",
+                        "Warum war Mazedonien so wichtig?",
+                        "Wie wurde das Land regiert?",
+                        "Wie endete das Reich durch Rom?"
+                    ],
+                    links: [{ label: "Wikipedia: Antigoniden", url: "https://de.wikipedia.org/wiki/Antigoniden" }]
+                }
+            };
 
-    const runRetry = async (retryCount = 0) => {
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            instances: { prompt: `Ancient Greek architecture or historical scene: ${prompt}, historical reconstruction, educational style, clear details` },
-            parameters: { sampleCount: 1 }
-          })
-        });
+            const data = content[activeTab];
 
-        if (!response.ok) throw new Error(`Status: ${response.status}`);
+            return (
+                <div className="max-w-4xl mx-auto p-4 md:p-8">
+                    <header className="text-center mb-8">
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tight">HELLENISMUS</h1>
+                        <p className="text-blue-600 font-bold uppercase tracking-widest text-sm">Projekt: Drei Reiche</p>
+                    </header>
 
-        const result = await response.json();
-        if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
-          const url = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-          setGeneratedImages(prev => ({ ...prev, [key]: url }));
-          return true;
-        } else {
-          throw new Error('No image data');
-        }
-      } catch (error) {
-        if (retryCount < 5) {
-          const delays = [1000, 2000, 4000, 8000, 16000];
-          await new Promise(resolve => setTimeout(resolve, delays[retryCount]));
-          return runRetry(retryCount + 1);
-        }
-        throw error;
-      }
-    };
+                    <nav className="flex overflow-x-auto gap-2 p-2 bg-slate-200 rounded-2xl mb-8 no-scrollbar">
+                        {Object.keys(content).map(key => (
+                            <button 
+                                key={key}
+                                onClick={() => setActiveTab(key)}
+                                className={`px-6 py-3 rounded-xl font-bold transition-all whitespace-nowrap ${
+                                    activeTab === key ? 'bg-white text-blue-600 shadow-md' : 'text-slate-500 hover:bg-slate-300'
+                                }`}
+                            >
+                                {key === 'intro' ? 'Projekt-Start' : content[key].title}
+                            </button>
+                        ))}
+                    </nav>
 
-    try {
-      await runRetry();
-    } catch (error) {
-      setErrorMessage("Bild konnte nicht geladen werden. Bitte später nochmal klicken.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+                    <main className="bg-white rounded-3xl p-6 md:p-10 shadow-xl">
+                        <h2 className="text-3xl font-black text-slate-800 mb-2">{data.title}</h2>
+                        {data.location && <p className="text-blue-500 font-bold mb-6 italic">📍 {data.location}</p>}
 
-  const tabs = [
-    { id: 'intro', label: 'Projekt-Start', icon: <Info size={18} /> },
-    { id: 'ptolemaeer', label: '1. Ptolemäer', icon: <Map size={18} /> },
-    { id: 'seleukiden', label: '2. Seleukiden', icon: <Globe size={18} /> },
-    { id: 'antigoniden', label: '3. Antigoniden', icon: <Users size={18} /> },
-    { id: 'zusatz', label: 'Zusatz & Tipps', icon: <HelpCircle size={18} /> },
-  ];
+                        <div className="space-y-6 text-slate-700 leading-relaxed">
+                            {data.text && <p className="text-lg">{data.text}</p>}
+                            
+                            {data.tasks && (
+                                <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+                                    <h3 className="font-bold text-amber-800 mb-2">Was ihr tun sollt:</h3>
+                                    <ul className="list-disc ml-5 space-y-1">
+                                        {data.tasks.map((t, i) => <li key={i}>{t}</li>)}
+                                    </ul>
+                                </div>
+                            )}
 
-  const content = {
-    intro: {
-      title: "Drei Gruppen – Drei Reiche",
-      subtitle: "Ein Erbe von Alexander dem Großen",
-      text: "Nachdem Alexander der Große gestorben war, wurde sein riesiges Reich unter seinen Generälen aufgeteilt. Ihr sollt nun in euren Gruppen eines dieser Reiche genau untersuchen und vorstellen.",
-      tasks: [
-        "Beantwortet die Fragen zu eurem Reich.",
-        "Sucht passende Bilder oder Karten.",
-        "Erstellt ein Plakat oder eine digitale Präsentation."
-      ],
-      imagePrompt: "The generals of Alexander the Great dividing a giant map of an empire",
-      vocabulary: [
-        { word: "Hellenismus", def: "Die Zeit, in der griechische Sprache und Kultur in vielen Ländern (wie Ägypten oder Persien) wichtig wurden." },
-        { word: "Diadochen", def: "Das waren die Nachfolger von Alexander. Es waren seine Generäle, die sich um die Macht stritten." }
-      ]
-    },
-    ptolemaeer: {
-      title: "Das Ptolemäerreich",
-      location: "Ägypten, Hauptstadt: Alexandria",
-      questions: [
-        "Wer war der allererste Herrscher in eurem Reich?",
-        "In welchem Jahr wurde das Reich gegründet?",
-        "Warum war ausgerechnet Ägypten so wichtig für Ptolemaios?",
-        "Was machte die Stadt Alexandria so besonders und berühmt?",
-        "Wie sah Alexandria damals aus? (Denkt an den Hafen, den Leuchtturm und die Bibliothek)",
-        "Was passierte in der berühmten Bibliothek von Alexandria?",
-        "Warum war die Wissenschaft (z. B. Mathe oder Sterne beobachten) dort so wichtig?",
-        "Wie haben die Menschen im Reich zusammengelebt? (Griechen und Ägypter)",
-        "Wie haben die Herrscher das mit der Religion und der Kultur geregelt?",
-        "Was war bei der Familie der Ptolemäer besonders seltsam? (Stichwort: Geschwister-Ehe)",
-        "Was hatte das Reich noch mit der alten griechischen Kultur zu tun?",
-        "Welche berühmten Personen kennt man heute noch aus diesem Reich? (z. B. Kleopatra)",
-        "Warum ging das Reich am Ende unter und wer kam dann an die Macht?"
-      ],
-      links: [
-        { label: "Wikipedia: Ptolemäer", url: "https://de.wikipedia.org/wiki/Ptolem%C3%A4erreich" },
-        { label: "Planet Wissen: Alexandria", url: "https://www.planet-wissen.de/kultur/metropolen/alexandria_der_leuchtturm_der_menschheit/index.html" }
-      ],
-      vocabulary: [
-        { word: "Pharos", def: "Der riesige Leuchtturm vor Alexandria – eines der sieben Weltwunder." },
-        { word: "Dynastie", def: "Eine Herrscherfamilie, in der die Macht immer vom Vater an die Kinder weitergegeben wird." }
-      ],
-      presentationTips: "Zeigt Bilder vom Leuchtturm und der Bibliothek. Erklärt euren Mitschülern, warum Alexandria die 'schlauste Stadt' der Welt war.",
-      imagePrompt: "The Great Library of Alexandria with scrolls and scholars"
-    },
-    seleukiden: {
-      title: "Das Seleukidenreich",
-      location: "Mesopotamien, Persien, Teile Indiens",
-      questions: [
-        "Welche Länder und Gebiete gehörten zu eurem Reich? (Sucht eine Karte!)",
-        "Wann genau entstand dieses Reich?",
-        "Wer war Seleukos und wie ist er Chef des Reiches geworden?",
-        "Warum war es so extrem schwierig, dieses riesige Reich zu regieren?",
-        "Welche verschiedenen Völker und Kulturen haben dort gewohnt?",
-        "Wie haben die Herrscher versucht, so viele verschiedene Menschen unter Kontrolle zu halten?",
-        "Welche Städte haben die Herrscher ganz neu gebaut?",
-        "Warum war der Handel (z. B. die Seidenstraße) so wichtig für das Reich?",
-        "Gab es Streit, Aufstände oder haben sich Teile des Reiches selbstständig gemacht?",
-        "Welche Probleme hatte das Militär (die Armee)?",
-        "Woran hat man in diesem Reich gemerkt, dass es 'hellenistisch' war?",
-        "Warum wurde das Reich mit der Zeit immer schwächer?",
-        "Wer hat die Seleukiden am Ende besiegt oder das Land übernommen?"
-      ],
-      links: [
-        { label: "Wikipedia: Seleukiden", url: "https://de.wikipedia.org/wiki/Seleukidenreich" },
-        { label: "Terra X: Die Seidenstraße", url: "https://www.zdf.de/dokumentation/terra-x/die-seidenstrasse-102.html" }
-      ],
-      vocabulary: [
-        { word: "Seidenstraße", def: "Ein langer Handelsweg, auf dem kostbare Waren von Asien bis zum Mittelmeer transportiert wurden." },
-        { word: "Zentralmacht", def: "Wenn eine Regierung von einem Ort aus versucht, ein riesiges Gebiet zu steuern." }
-      ],
-      presentationTips: "Nutzt unbedingt eine Landkarte! Euer Reich war das größte, das müsst ihr euren Mitschülern zeigen.",
-      imagePrompt: "A busy marketplace on the Silk Road with Greek and Persian merchants"
-    },
-    antigoniden: {
-      title: "Das Antigonidenreich",
-      location: "Griechenland & Mazedonien",
-      questions: [
-        "Was hatte euer Reich direkt mit Alexander dem Großen zu tun?",
-        "Wer war Antigonos und wie wurde er der Herrscher?",
-        "Wo genau lag das Herzstück (Kerngebiet) eures Reiches?",
-        "Warum war Mazedonien so wichtig für das ganze Gebiet?",
-        "Was machten die alten Städte wie Athen oder Korinth in dieser Zeit?",
-        "Haben sich die Leute gegen die Herrscher gewehrt?",
-        "Gegen welche anderen Diadochen (Nachfolger) hat euer Reich Krieg geführt?",
-        "Wie wurde das Land regiert? (Königreich oder Militärherrschaft?)",
-        "Welche Rolle hat die Armee für die Macht gespielt?",
-        "Wie haben sie es geschafft, dass die griechische Kultur erhalten blieb?",
-        "Gab es neue kulturelle Erfindungen oder Veränderungen?",
-        "Wie haben sie sich mit dem neuen, starken Rom verstanden?",
-        "Wann und warum war das Reich am Ende vorbei?"
-      ],
-      links: [
-        { label: "Wikipedia: Antigoniden", url: "https://de.wikipedia.org/wiki/Antigoniden" },
-        { label: "Lernhelfer: Mazedonien", url: "https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/makedonien" }
-      ],
-      vocabulary: [
-        { word: "Phalanx", def: "Eine Truppe von Soldaten, die ganz eng beieinander stehen und sehr lange Speere benutzen." },
-        { word: "Stadtstaaten", def: "Griechische Städte (wie Athen), die fast wie kleine eigene Länder funktionierten." }
-      ],
-      presentationTips: "Sprecht über die Soldaten und ihre Ausrüstung. Erklärt auch den Streit mit den Römern.",
-      imagePrompt: "Ancient Macedonian city of Pella with Greek columns and palace"
-    },
-    zusatz: {
-      title: "Zusatzfragen & Hilfe",
-      sections: [
-        {
-          heading: "Fragen für ALLE Gruppen",
-          items: [
-            "Welche Dinge aus der griechischen Kultur findet ihr in eurem Reich?",
-            "Wo haben sich griechische und fremde Kulturen vermischt? (Hellenismus)",
-            "Was von diesen alten Dingen gibt es heute immer noch?"
-          ]
-        },
-        {
-          heading: "Tipps für gute Gruppenarbeit",
-          items: [
-            "Teilt die Aufgaben auf: Wer sucht Infos? Wer bastelt das Plakat? Wer spricht?",
-            "Sprecht viel miteinander und helft euch gegenseitig.",
-            "Übt euren Vortrag mindestens einmal laut vor der Gruppe."
-          ]
-        }
-      ],
-      imagePrompt: "A museum display with ancient Greek statues and coins"
-    }
-  };
+                            <div className="grid gap-4 mt-8">
+                                <h3 className="text-xl font-bold text-slate-800">Eure Forschungsfragen</h3>
+                                {data.questions?.map((q, i) => (
+                                    <div key={i} className="flex gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                        <span className="flex-none w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">{i+1}</span>
+                                        <p className="font-medium">{q}</p>
+                                    </div>
+                                ))}
+                            </div>
 
-  const renderContent = () => {
-    const data = content[activeTab];
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex flex-col lg:flex-row gap-8 mb-10">
-          <div className="flex-1">
-            <h2 className="text-3xl font-bold text-slate-800 mb-2">{data.title}</h2>
-            {data.location && <div className="flex items-center gap-2 text-blue-600 font-bold mb-4 bg-blue-50 px-3 py-1 rounded-full w-fit"><Map size={16}/> {data.location}</div>}
-            {data.subtitle && <p className="text-xl text-slate-600 mb-4">{data.subtitle}</p>}
-            {data.text && <p className="text-slate-700 leading-relaxed mb-6 text-lg">{data.text}</p>}
-            
-            {data.tasks && (
-              <div className="bg-amber-50 border-l-4 border-amber-400 p-5 mb-6 rounded-r-xl">
-                <h3 className="font-bold text-amber-800 mb-3 uppercase text-xs tracking-widest flex items-center gap-2"><Lightbulb size={16}/> Was ihr tun sollt:</h3>
-                <ul className="space-y-2">
-                  {data.tasks.map((task, i) => (
-                    <li key={i} className="flex gap-2 text-slate-700 font-medium">
-                      <CheckCircle2 size={18} className="text-amber-500 shrink-0 mt-0.5" />
-                      {task}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+                            {data.vocabulary && (
+                                <div className="mt-8">
+                                    <h3 className="font-bold text-slate-800 mb-4">Wort-Hilfe</h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {data.vocabulary.map((v, i) => (
+                                            <div key={i} className="p-4 bg-blue-50 rounded-2xl">
+                                                <p className="font-bold text-blue-700">{v.word}</p>
+                                                <p className="text-sm">{v.def}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
-            {data.presentationTips && (
-              <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-xl">
-                <h3 className="font-bold text-emerald-800 mb-1 text-sm flex items-center gap-2"><MessageSquare size={16}/> Tipp für euren Vortrag:</h3>
-                <p className="text-slate-700 italic">"{data.presentationTips}"</p>
-              </div>
-            )}
-          </div>
-          
-          <div className="w-full lg:w-80 shrink-0">
-            <div className="relative group overflow-hidden rounded-3xl border-2 border-slate-200 bg-slate-100 aspect-[4/5] flex flex-col items-center justify-center shadow-xl">
-              {generatedImages[activeTab] ? (
-                <img src={generatedImages[activeTab]} alt="History" className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-center p-6">
-                  {isGenerating ? (
-                    <div className="flex flex-col items-center gap-4">
-                      <Loader2 className="animate-spin text-blue-600" size={48} />
-                      <p className="text-sm font-bold text-slate-600">Reise in die Vergangenheit...</p>
-                    </div>
-                  ) : (
-                    <>
-                      <ImageIcon className="mx-auto mb-3 text-slate-300" size={64} />
-                      <p className="text-sm font-bold text-slate-400 mb-4 px-4 uppercase tracking-tighter leading-tight">Hier könnt ihr ein passendes Bild für euer Reich erstellen</p>
-                      <button 
-                        onClick={() => generateImage(data.imagePrompt, activeTab)}
-                        className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-lg active:scale-95 flex items-center gap-2 mx-auto"
-                      >
-                        <ImageIcon size={18} /> Bild erstellen
-                      </button>
-                    </>
-                  )}
+                            {data.links && (
+                                <div className="pt-6 border-t border-slate-100">
+                                    <h3 className="font-bold mb-4">Internet-Links</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {data.links.map((l, i) => (
+                                            <a key={i} href={l.url} target="_blank" className="px-4 py-2 bg-slate-800 text-white rounded-xl text-sm hover:bg-slate-700 transition-colors">
+                                                {l.label} ↗
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </main>
+
+                    <footer className="mt-12 text-center text-slate-400 font-bold text-xs uppercase tracking-widest">
+                        GOBS LINDERN • GESCHICHTSPROJEKT • 2026
+                    </footer>
                 </div>
-              )}
-              {errorMessage && !isGenerating && (
-                <div className="absolute inset-x-4 bottom-4 bg-red-100 border border-red-200 p-2 rounded-xl flex items-center gap-2 text-red-600 text-xs font-bold">
-                  <AlertCircle size={14} className="shrink-0" />
-                  <span>{errorMessage}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+            );
+        };
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          <div className="xl:col-span-2 space-y-4">
-            <h3 className="text-xl font-bold text-slate-800 border-b-2 border-slate-100 pb-2 flex items-center gap-2">
-              <HelpCircle className="text-blue-500" size={20}/> Eure Fragen
-            </h3>
-            <div className="space-y-3">
-              {data.questions?.map((q, i) => (
-                <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-blue-300 transition-all flex gap-4 group">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-500 font-bold text-sm shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">{i + 1}</span>
-                  <p className="text-slate-700 font-medium self-center">{q}</p>
-                </div>
-              ))}
-              {data.sections?.map((section, i) => (
-                <div key={i} className="space-y-4 pt-4">
-                  <h4 className="font-bold text-blue-600 uppercase text-xs tracking-[0.2em]">{section.heading}</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {section.items?.map((item, j) => (
-                      <div key={j} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-700 italic flex gap-3">
-                        <CheckCircle2 size={16} className="text-blue-400 shrink-0 mt-1" />
-                        "{item}"
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            {data.vocabulary && (
-              <div className="bg-slate-900 text-white rounded-[2rem] p-6 shadow-2xl">
-                <h3 className="text-lg font-bold mb-5 flex items-center gap-2 text-blue-400">
-                  <Book size={20}/> Wort-Hilfe
-                </h3>
-                <div className="space-y-6">
-                  {data.vocabulary.map((v, i) => (
-                    <div key={i} className="group">
-                      <p className="font-black text-blue-300 mb-1 group-hover:text-white transition-colors uppercase text-xs tracking-widest">{v.word}</p>
-                      <p className="text-sm text-slate-400 leading-relaxed">{v.def}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {(data.links || (data.sections && data.sections.find(s => s.links))) && (
-              <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
-                <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800">
-                  <ExternalLink size={20} className="text-blue-600"/> Internet-Links
-                </h3>
-                <div className="space-y-3">
-                  {(data.links || data.sections.find(s => s.links).links).map((link, i) => (
-                    <a 
-                      key={i} 
-                      href={link.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-blue-600 hover:text-white transition-all group"
-                    >
-                      <span className="text-sm font-bold truncate pr-2">{link.label}</span>
-                      <ExternalLink size={16} className="shrink-0 opacity-40 group-hover:opacity-100" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
-      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col xl:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-200">
-              <Book className="text-white" size={24} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-800 leading-none">Hellenismus</h1>
-              <span className="text-[10px] font-black text-blue-600 tracking-[0.3em] uppercase">Projekt: Drei Reiche</span>
-            </div>
-          </div>
-          
-          <nav className="flex bg-slate-200/50 p-1.5 rounded-2xl overflow-x-auto max-w-full no-scrollbar">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all whitespace-nowrap ${
-                  activeTab === tab.id 
-                    ? 'bg-white text-blue-600 shadow-md translate-y-[-1px]' 
-                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200'
-                }`}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 mt-12">
-        <div className="bg-white rounded-[3rem] p-8 md:p-14 shadow-2xl shadow-slate-300/30 border border-slate-100 min-h-[800px]">
-          {renderContent()}
-        </div>
-      </main>
-
-      <footer className="max-w-7xl mx-auto px-4 mt-20 text-center">
-        <div className="flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity">
-          <div className="h-px w-32 bg-slate-300"></div>
-          <p className="text-slate-500 font-black uppercase text-[10px] tracking-[0.5em]">
-            GOBS LINDERN • GESCHICHTSPROJEKT • 2025
-          </p>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
