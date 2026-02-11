@@ -1,394 +1,384 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Das Seleukidenreich - Geschichte Klasse 10</title>
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #e67e22;
-            --bg: #f4f7f6;
-            --text: #333;
-            --white: #ffffff;
+import React, { useState } from 'react';
+import { Book, Globe, Map, Users, Info, HelpCircle, Image as ImageIcon, Loader2, ExternalLink, MessageSquare, Lightbulb, AlertCircle, CheckCircle2 } from 'lucide-react';
+
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'diadochen-projekt';
+const apiKey = ""; 
+
+const App = () => {
+  const [activeTab, setActiveTab] = useState('intro');
+  const [generatedImages, setGeneratedImages] = useState({});
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const generateImage = async (prompt, key) => {
+    if (generatedImages[key]) return;
+    setIsGenerating(true);
+    setErrorMessage(null);
+
+    const runRetry = async (retryCount = 0) => {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            instances: { prompt: `Ancient Greek architecture or historical scene: ${prompt}, historical reconstruction, educational style, clear details` },
+            parameters: { sampleCount: 1 }
+          })
+        });
+
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+        const result = await response.json();
+        if (result.predictions && result.predictions[0]?.bytesBase64Encoded) {
+          const url = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+          setGeneratedImages(prev => ({ ...prev, [key]: url }));
+          return true;
+        } else {
+          throw new Error('No image data');
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--bg);
-            margin: 0;
-            padding: 0;
+      } catch (error) {
+        if (retryCount < 5) {
+          const delays = [1000, 2000, 4000, 8000, 16000];
+          await new Promise(resolve => setTimeout(resolve, delays[retryCount]));
+          return runRetry(retryCount + 1);
         }
-
-        header {
-            background-color: var(--primary);
-            color: var(--white);
-            padding: 1rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .lang-switch {
-            margin-top: 10px;
-        }
-
-        .lang-btn {
-            background: none;
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-size: 1.5rem;
-            padding: 5px;
-            border-radius: 5px;
-            transition: border 0.3s;
-        }
-
-        .lang-btn:hover, .lang-btn.active {
-            border-color: var(--secondary);
-        }
-
-        nav {
-            background: #ecf0f1;
-            display: flex;
-            overflow-x: auto;
-            sticky;
-            top: 120px;
-            justify-content: center;
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .tab-btn {
-            padding: 15px 25px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-weight: bold;
-            color: var(--primary);
-            white-space: nowrap;
-            font-size: 1.1rem;
-        }
-
-        .tab-btn.active {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
-            background: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        .glossary-box, .task-box {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .glossary-box {
-            background: #fdf2e9;
-            border-left: 5px solid var(--secondary);
-        }
-
-        .task-box {
-            background: #e8f4f8;
-            border-left: 5px solid #3498db;
-        }
-
-        .glossary-content {
-            display: none;
-            margin-top: 10px;
-        }
-
-        .toggle-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .links-list {
-            margin-top: 20px;
-            padding: 15px;
-            background: #eee;
-            border-radius: 5px;
-        }
-
-        h2 { color: var(--primary); border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
-        h3 { color: var(--secondary); }
-
-        @media (max-width: 768px) {
-            nav { justify-content: flex-start; }
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1 id="main-title">Das Seleukidenreich: Erben Alexanders</h1>
-    <div class="lang-switch">
-        <button class="lang-btn active" onclick="setLang('de')">🇩🇪</button>
-        <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
-        <button class="lang-btn" onclick="setLang('ru')">🇷🇺</button>
-        <button class="lang-btn" onclick="setLang('ar')">🇸🇦</button>
-        <button class="lang-btn" onclick="setLang('ro')">🇷🇴</button>
-    </div>
-</header>
-
-<nav>
-    <button class="tab-btn active" onclick="openTab(event, 'g1')" data-key="nav-g1">Gruppe 1</button>
-    <button class="tab-btn" onclick="openTab(event, 'g2')" data-key="nav-g2">Gruppe 2</button>
-    <button class="tab-btn" onclick="openTab(event, 'g3')" data-key="nav-g3">Gruppe 3</button>
-    <button class="tab-btn" onclick="openTab(event, 'g4')" data-key="nav-g4">Gruppe 4</button>
-    <button class="tab-btn" onclick="openTab(event, 'g5')" data-key="nav-g5">Gruppe 5</button>
-    <button class="tab-btn" onclick="openTab(event, 'tips')" data-key="nav-tips">Präsentations-Tipps</button>
-</nav>
-
-<div class="container">
-    <div id="g1" class="content-section active">
-        <h2 data-key="g1-title">Aufstieg und Gründung: Seleukos I. Nikator</h2>
-        <div class="info-text">
-            <p>Nach dem plötzlichen Tod Alexanders des Großen im Jahr 323 v. Chr. hinterließ dieser ein Weltreich ohne klaren Erben. In den darauffolgenden Diadochenkriegen kämpften seine Generäle um die Vorherrschaft. Seleukos I., der den Beinamen „Nikator“ (der Sieger) erhielt, kristallisierte sich als einer der fähigsten Strategen heraus. Zunächst erhielt er die Satrapie Babylonien, musste jedoch zwischenzeitlich fliehen, bevor er 312 v. Chr. endgültig die Kontrolle übernahm. Dieses Jahr markiert den Beginn der seleukidischen Ära. Sein Herrschaftsbereich dehnte sich schnell aus und umfasste in seiner Blütezeit fast das gesamte asiatische Territorium Alexanders – von der Ägäis bis zum Indus. Seleukos festigte seine Macht durch die Gründung strategisch wichtiger Städte wie Seleukeia am Tigris und Antiochia am Orontes, die zu neuen kulturellen Zentren wurden. Er verfolgte eine Politik der Integration, indem er persische Verwaltungsstrukturen beibehielt, aber griechische Siedler zur Sicherung der Grenzen ansiedelte. Dies führte zu einer einzigartigen Verschmelzung von Kulturen, die wir heute als Hellenismus bezeichnen. Die geographische Ausdehnung stellte jedoch auch eine immense Herausforderung dar: Das Reich war ethnisch und religiös hochgradig heterogen. Um diese Vielfalt zu kontrollieren, setzte Seleukos auf ein Netzwerk loyaler Gouverneure und eine schlagkräftige Armee. Der Konflikt mit anderen Diadochenreichen, insbesondere den Ptolemäern in Ägypten, blieb jedoch eine Konstante seiner Regierungszeit. Trotz zahlreicher Kriege gelang es ihm, ein stabiles Fundament für eine Dynastie zu legen, die über zwei Jahrhunderte bestehen sollte. Seine Ermordung im Jahr 281 v. Chr. beendete zwar sein Leben, aber nicht seine Vision eines eurasischen Großreichs.</p>
-        </div>
-        <div class="glossary-box">
-            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
-            <div class="glossary-content">
-                <ul>
-                    <li><strong>Diadochen:</strong> Nachfolger Alexanders des Großen.</li>
-                    <li><strong>Satrapie:</strong> Eine Verwaltungsprovinz im antiken Perserreich.</li>
-                    <li><strong>Hellenismus:</strong> Epoche der Verschmelzung griechischer und orientalischer Kultur.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="task-box">
-            <h3 data-key="task-title">Eure Aufgaben</h3>
-            <ol>
-                <li>Analysiere die Ursachen für den Aufstieg von Seleukos I. nach Alexanders Tod.</li>
-                <li>Erläutere die Bedeutung der Städtegründungen für die Machtsicherung.</li>
-                <li>Diskutiere, warum das Jahr 312 v. Chr. als Epochenwende gilt.</li>
-            </ol>
-        </div>
-        <div class="links-list">
-            <a href="https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/hellenismus" target="_blank">Lernhelfer: Hellenismus</a> | 
-            <a href="https://www.planet-wissen.de/geschichte/antike/alexander_der_grosse/index.html" target="_blank">Planet Wissen: Alexander & Erben</a> | 
-            <a href="https://klexikon.zum.de/wiki/Alexander_der_Gro%C3%9Fe" target="_blank">Klexikon: Antike Welt</a>
-        </div>
-    </div>
-
-    <div id="g2" class="content-section">
-        <h2 data-key="g2-title">Struktur und Verwaltung des Vielvölkerstaates</h2>
-        <div class="info-text">
-            <p>Das Seleukidenreich war das größte der Diadochenreiche und stand vor der monumentalen Aufgabe, ein Gebiet mit unterschiedlichsten Sprachen, Religionen und Traditionen zu regieren. Die Verwaltung basierte auf einer hybriden Struktur: Die seleukidischen Könige übernahmen das bewährte Satrapien-System der Achämeniden (Perser), besetzten die Spitzenpositionen jedoch fast ausschließlich mit Griechen und Makedonen. Dies schuf eine privilegierte Oberschicht, die oft isoliert von der lokalen Bevölkerung lebte. Ein zentrales Instrument der Herrschaft war die Gründung von „Poleis“, griechisch geprägten Städten, die als administrative und wirtschaftliche Knotenpunkte fungierten. Diese Städte besaßen oft eine gewisse Autonomie, waren aber durch Steuern und Militärpflicht eng an den König gebunden. Die wirtschaftliche Basis des Reiches war der Fernhandel. Durch die Kontrolle über die Seidenstraße und die Handelswege zum Persischen Golf flossen enorme Reichtümer in die Staatskasse. Dennoch blieb das Reich fragil. Die enorme Distanz zwischen der Hauptstadt Antiochia und den östlichen Provinzen wie Baktrien führte dazu, dass lokale Gouverneure oft eigene Ambitionen entwickelten. Der König musste ständig präsent sein, oft reiste er mit seinem Hofstaat durch das Land, um Präsenz zu zeigen und Aufstände im Keim zu ersticken. Ein weiteres Problem war die religiöse Vielfalt: Während die Seleukiden den griechischen Götterkult förderten, mussten sie gleichzeitig lokale Kulte wie den von Marduk in Babylon respektieren, um die Loyalität der Priesterschaft zu sichern. Diese Balance zwischen Integration und Unterdrückung war der Schlüssel zur Stabilität, aber auch die größte Schwachstelle, da jede Schwäche des Zentrums sofort zu Abspaltungstendenzen in der Peripherie führte.</p>
-        </div>
-        <div class="glossary-box">
-            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
-            <div class="glossary-content">
-                <ul>
-                    <li><strong>Autonomie:</strong> Selbstverwaltung innerhalb eines Staates.</li>
-                    <li><strong>Poleis:</strong> Griechische Stadtstaaten bzw. Städte.</li>
-                    <li><strong>Peripherie:</strong> Randgebiete eines Machtzentrums.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="task-box">
-            <h3 data-key="task-title">Eure Aufgaben</h3>
-            <ol>
-                <li>Beschreibe die Verwaltungsstruktur und nenne die Vorbilder dieser Organisation.</li>
-                <li>Beurteile die Rolle der griechischen Städte für den Zusammenhalt des Reiches.</li>
-                <li>Erkläre das Spannungsfeld zwischen Zentrum und Peripherie anhand eines Beispiels.</li>
-            </ol>
-        </div>
-        <div class="links-list">
-            <a href="https://www.kinderzeitmaschine.de/antike/griechen/ereignisse/hellenismus/seleukidenreich/" target="_blank">Kinderzeitmaschine: Die Seleukiden</a> | 
-            <a href="https://www.bpb.de/themen/asien/zentralasien/44917/antike/" target="_blank">BPB: Geschichte Zentralasiens</a> | 
-            <a href="https://www.britannica.com/topic/Seleucid-empire" target="_blank">Britannica: Seleucid Empire (EN)</a>
-        </div>
-    </div>
-
-    <div id="g3" class="content-section">
-        <h2 data-key="g3-title">Kultur und Religion: Die hellenistische Synthese</h2>
-        <div class="info-text">
-            <p>Kulturell war das Seleukidenreich ein Schmelztiegel. Unter dem Begriff Hellenismus verstehen wir die Ausbreitung griechischer Kultur, Sprache und Lebensweise im Orient. Die Seleukiden sahen sich als Förderer dieser Entwicklung, nicht nur aus Überzeugung, sondern auch als politisches Kalkül. Griechisch wurde zur „Lingua Franca“, der Verkehrssprache für Verwaltung, Handel und Wissenschaft. In Städten wie Babylon oder Susa entstanden Gymnasien, Theater und Bibliotheken nach griechischem Vorbild. Doch die kulturelle Beeinflussung war keine Einbahnstraße. Griechische Siedler übernahmen lokale Bräuche, kleideten sich orientalisch und heirateten einheimische Frauen. Besonders im religiösen Bereich kam es zum „Synkretismus“, der Vermischung verschiedener Göttervorstellungen. So wurde der babylonische Gott Bel oft mit dem griechischen Zeus gleichgesetzt. Diese religiöse Toleranz hatte jedoch Grenzen, wie der gewaltsame Konflikt mit den Juden unter Antiochos IV. Epiphanes zeigt. Der Versuch, den Tempel in Jerusalem zu hellenisieren, führte zum Makkabäeraufstand, der die seleukidische Herrschaft in Judäa dauerhaft schwächte. In der Kunst manifestierte sich der hellenistische Stil durch eine Abkehr von der klassischen Strenge hin zu mehr Realismus und Pathos. Monumentale Bauten sollten die Größe der Dynastie unterstreichen. Die Wissenschaft profitierte vom Austausch zwischen griechischem Rationalismus und orientalischem Erfahrungswissen, insbesondere in der Astronomie und Medizin. Trotz der Dominanz griechischer Eliten blieb die lokale Kultur in den ländlichen Gebieten weitgehend erhalten, was zu einer kulturellen Spaltung zwischen Stadt und Land führte.</p>
-        </div>
-        <div class="glossary-box">
-            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
-            <div class="glossary-content">
-                <ul>
-                    <li><strong>Lingua Franca:</strong> Gemeinsame Verkehrssprache zwischen verschiedenen Völkern.</li>
-                    <li><strong>Synkretismus:</strong> Vermischung von religiösen Ideen oder philosophischen Lehren.</li>
-                    <li><strong>Hellenisierung:</strong> Angleichung an die griechische Kultur.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="task-box">
-            <h3 data-key="task-title">Eure Aufgaben</h3>
-            <ol>
-                <li>Definiere den Begriff „Hellenistische Synthese“ anhand von Beispielen aus dem Text.</li>
-                <li>Untersuche die Ursachen und Folgen des Makkabäeraufstandes.</li>
-                <li>Analysiere, warum Griechisch zur Weltsprache der Antike aufsteigen konnte.</li>
-            </ol>
-        </div>
-        <div class="links-list">
-            <a href="https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/die-kultur-des-hellenismus" target="_blank">Lernhelfer: Kultur des Hellenismus</a> | 
-            <a href="https://www.bibelwissenschaft.de/wibilex/das-bibellexikon/lexikon/sachwort/anzeigen/details/makkabaeer/" target="_blank">WiBiLex: Makkabäer</a> | 
-            <a href="https://www.metmuseum.org/toah/hd/sele/hd_sele.htm" target="_blank">Met Museum: Seleucid Art (EN)</a>
-        </div>
-    </div>
-
-    <div id="g4" class="content-section">
-        <h2 data-key="g4-title">Militär und Konflikte: Die Syrischen Kriege</h2>
-        <div class="info-text">
-            <p>Die militärische Schlagkraft war die Existenzberechtigung des Seleukidenreiches. Die Armee war nach dem Vorbild der makedonischen Phalanx organisiert: schwer bewaffnete Infanteristen mit langen Stoßlanzen (Sarissen). Ergänzt wurde dies durch eine starke Kavallerie und – eine Besonderheit der Seleukiden – durch Kriegselefanten, die aus Indien importiert wurden. Diese „lebenden Panzer“ waren psychologisch und physisch eine gefürchtete Waffe. Ein Großteil der seleukidischen Geschichte ist geprägt von den sechs „Syrischen Kriegen“ gegen das ptolemäische Ägypten. Zentraler Streitpunkt war die Region Koilesyrien (heutiges Palästina und Libanon), die strategisch und wirtschaftlich enorm wichtig war. In der Schlacht von Raphia (217 v. Chr.) standen sich zehntausende Soldaten und hunderte Elefanten gegenüber – es war eine der größten Schlachten der Antike. Während die Seleukiden zeitweise die Oberhand gewannen, führten die ständigen Kriege zu einer massiven finanziellen Belastung. Zudem mussten Söldner angeworben werden, was die Loyalität der Armee schwächte. Neben den äußeren Feinden gab es ständige dynastische Kämpfe: Thronstreitigkeiten führten oft zu Bürgerkriegen, die das Reich von innen aushölten. Ein Wendepunkt war der Konflikt mit der aufstrebenden Weltmacht Rom. In der Schlacht bei Magnesia (190 v. Chr.) wurde die seleukidische Armee vernichtend geschlagen. Der Friede von Apameia zwang das Reich zur Aufgabe seiner kleinasiatischen Gebiete und zur Zahlung astronomischer Entschädigungen. Dies markierte den Anfang vom Ende der militärischen Vormachtstellung im Osten.</p>
-        </div>
-        <div class="glossary-box">
-            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
-            <div class="glossary-content">
-                <ul>
-                    <li><strong>Phalanx:</strong> Dichte, tief gestaffelte Schlachtordnung von Infanterie.</li>
-                    <li><strong>Sarisse:</strong> Bis zu 6 Meter lange Stoßlanze der Makedonen.</li>
-                    <li><strong>Dynastie:</strong> Abfolge von Herrschern aus derselben Familie.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="task-box">
-            <h3 data-key="task-title">Eure Aufgaben</h3>
-            <ol>
-                <li>Beschreibe die Besonderheiten der seleukidischen Armee (Waffen, Einheiten).</li>
-                <li>Erkläre, warum die Syrischen Kriege eine dauerhafte Belastung für das Reich darstellten.</li>
-                <li>Analysiere die Folgen der Niederlage gegen Rom bei Magnesia.</li>
-            </ol>
-        </div>
-        <div class="links-list">
-            <a href="https://www.kriegsreisende.de/antike/diadochen.htm" target="_blank">Kriegsreisende: Söldner & Diadochen</a> | 
-            <a href="https://www.geschichte-abitur.de/antike/hellenismus" target="_blank">Geschichte-Abitur: Hellenismus</a> | 
-            <a href="https://www.worldhistory.org/Seleucid_Empire/" target="_blank">World History: Seleucid Empire (EN)</a>
-        </div>
-    </div>
-
-    <div id="g5" class="content-section">
-        <h2 data-key="g5-title">Niedergang und das Erbe der Seleukiden</h2>
-        <div class="info-text">
-            <p>Der Niedergang des Seleukidenreiches war ein schleichender Prozess, der durch eine Kombination aus innerem Zerfall und äußeren Druckfaktoren ausgelöst wurde. Nach dem Frieden von Apameia im Jahr 188 v. Chr. war das Reich finanziell ruiniert und militärisch gedemütigt. Im Osten erstarkte das Reich der Parther, das nach und nach die lebenswichtigen Provinzen wie Mesopotamien und Persien eroberte. Die Seleukiden verloren damit den Zugang zu den wichtigsten Handelsrouten und ihre wertvollsten Steuerquellen. Im Inneren zerfleischten sich die Mitglieder der königlichen Familie in endlosen Thronfolgestreitigkeiten. Oft gab es zwei oder drei Gegenkönige gleichzeitig, die sich gegenseitig bekämpften und dabei das Land verwüsteten. Die einst so stolze Zentralmacht schrumpfte auf ein kleines Kerngebiet in Syrien zusammen. Im Jahr 64 v. Chr. machte der römische Feldherr Pompeius dem Dahinsiechen ein Ende: Er setzte den letzten seleukidischen König ab und wandelte Syrien in eine römische Provinz um. Doch das Erbe der Seleukiden blieb bestehen. Die von ihnen gegründeten Städte blieben über Jahrhunderte Zentren der Bildung und des Handels. Die hellenistische Kultur bildete das Fundament, auf dem das Römische Reich im Osten aufbaute. Auch die christliche Ausbreitung wäre ohne die Vorarbeit der Seleukiden (griechische Sprache als Medium, städtische Infrastruktur) kaum in dieser Geschwindigkeit möglich gewesen. Viele kulturelle Errungenschaften des Orients gelangten über die seleukidische Vermittlung in den Westen. So blieb das Reich zwar politisch gescheitert, aber kulturhistorisch einer der wichtigsten Brückenbauer zwischen Europa und Asien.</p>
-        </div>
-        <div class="glossary-box">
-            <button class="toggle-btn" onclick="toggleGlossary(this)" data-key="glossary-btn">Schwierige Wörter erklären</button>
-            <div class="glossary-content">
-                <ul>
-                    <li><strong>Parther:</strong> Volk aus Zentralasien, das zum Hauptrivalen der Seleukiden wurde.</li>
-                    <li><strong>Dahinsiechen:</strong> Ein langsamer Verfall ohne Kraft zur Erneuerung.</li>
-                    <li><strong>Provinz:</strong> Ein unterworfenes, von Rom verwaltetes Gebiet.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="task-box">
-            <h3 data-key="task-title">Eure Aufgaben</h3>
-            <ol>
-                <li>Fasse die Hauptgründe für den Zerfall des Seleukidenreiches zusammen.</li>
-                <li>Erläutere, inwiefern das Reich trotz seines Untergangs „erfolgreich“ war.</li>
-                <li>Diskutiere die Rolle Roms beim endgültigen Ende der Dynastie.</li>
-            </ol>
-        </div>
-        <div class="links-list">
-            <a href="https://www.planet-wissen.de/geschichte/antike/das_antike_rom/index.html" target="_blank">Planet Wissen: Das antike Rom</a> | 
-            <a href="https://www.hellenismus.de" target="_blank">Hellenismus.de</a> | 
-            <a href="https://viamus.uni-goettingen.de/fr/e/uni/c/04/01" target="_blank">Viamus: Hellenistische Herrscher</a>
-        </div>
-    </div>
-
-    <div id="tips" class="content-section">
-        <h2 data-key="tips-title">Tipps für eure iPad-Präsentation</h2>
-        <div class="info-text">
-            <h3>Visualisierung mit Keynote / PowerPoint</h3>
-            <ul>
-                <li><strong>Interaktive Karten:</strong> Nutzt Karten, um die gewaltige Ausdehnung des Reiches zu zeigen. Markiert die Grenzen vor und nach dem Frieden von Apameia.</li>
-                <li><strong>Bildquellen:</strong> Verwendet Fotos von seleukidischen Münzen. Sie zeigen oft das Porträt der Könige und sind ein Beweis für deren Selbstdarstellung.</li>
-                <li><strong>Struktur:</strong> Nutzt die "Magic Move" (Zauberei) Funktion in Keynote für flüssige Übergänge zwischen Kartenabschnitten.</li>
-                <li><strong>Textmenge:</strong> Auf dem iPad gilt: Weniger ist mehr! Maximal 5 Stichpunkte pro Folie. Nutzt stattdessen die Referentennotizen.</li>
-                <li><strong>Export:</strong> Testet eure Präsentation vorher am Beamer. Manchmal verschieben sich Schriften beim Export von Keynote nach PowerPoint.</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<script>
-    const translations = {
-        'de': {
-            'nav-g1': 'Gruppe 1', 'nav-g2': 'Gruppe 2', 'nav-g3': 'Gruppe 3', 'nav-g4': 'Gruppe 4', 'nav-g5': 'Gruppe 5', 'nav-tips': 'Präsentations-Tipps',
-            'glossary-btn': 'Schwierige Wörter erklären', 'task-title': 'Eure Aufgaben', 'main-title': 'Das Seleukidenreich: Erben Alexanders'
-        },
-        'en': {
-            'nav-g1': 'Group 1', 'nav-g2': 'Group 2', 'nav-g3': 'Group 3', 'nav-g4': 'Group 4', 'nav-g5': 'Group 5', 'nav-tips': 'Presentation Tips',
-            'glossary-btn': 'Explain difficult words', 'task-title': 'Your Tasks', 'main-title': 'The Seleucid Empire: Heirs of Alexander'
-        },
-        'ru': {
-            'nav-g1': 'Группа 1', 'nav-g2': 'Группа 2', 'nav-g3': 'Группа 3', 'nav-g4': 'Группа 4', 'nav-g5': 'Группа 5', 'nav-tips': 'Советы по презентации',
-            'glossary-btn': 'Объяснить сложные слова', 'task-title': 'Ваши задачи', 'main-title': 'Империя Селевкидов: Наследники Александра'
-        },
-        'ar': {
-            'nav-g1': 'المجموعة 1', 'nav-g2': 'المجموعة 2', 'nav-g3': 'المجموعة 3', 'nav-g4': 'المجموعة 4', 'nav-g5': 'المجموعة 5', 'nav-tips': 'نصائح التقديم',
-            'glossary-btn': 'شرح الكلمات الصعبة', 'task-title': 'مهامكم', 'main-title': 'الإمبراطورية السلوقية: ورثة الإسكندر'
-        },
-        'ro': {
-            'nav-g1': 'Grupul 1', 'nav-g2': 'Grupul 2', 'nav-g3': 'Grupul 3', 'nav-g4': 'Grupul 4', 'nav-g5': 'Grupul 5', 'nav-tips': 'Sfaturi pentru prezentare',
-            'glossary-btn': 'Explică cuvintele dificile', 'task-title': 'Sarcinile voastre', 'main-title': 'Imperiul Seleucid: Moștenitorii lui Alexandru'
-        }
+        throw error;
+      }
     };
 
-    function setLang(lang) {
-        // Buttons active state
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        // Translate elements
-        for (let key in translations[lang]) {
-            const elements = document.querySelectorAll(`[data-key="${key}"]`);
-            elements.forEach(el => {
-                el.innerText = translations[lang][key];
-            });
-        }
+    try {
+      await runRetry();
+    } catch (error) {
+      setErrorMessage("Bild konnte nicht geladen werden. Bitte später nochmal klicken.");
+    } finally {
+      setIsGenerating(false);
     }
+  };
 
-    function openTab(evt, tabName) {
-        const sections = document.getElementsByClassName("content-section");
-        for (let i = 0; i < sections.length; i++) {
-            sections[i].classList.remove("active");
+  const tabs = [
+    { id: 'intro', label: 'Projekt-Start', icon: <Info size={18} /> },
+    { id: 'ptolemaeer', label: '1. Ptolemäer', icon: <Map size={18} /> },
+    { id: 'seleukiden', label: '2. Seleukiden', icon: <Globe size={18} /> },
+    { id: 'antigoniden', label: '3. Antigoniden', icon: <Users size={18} /> },
+    { id: 'zusatz', label: 'Zusatz & Tipps', icon: <HelpCircle size={18} /> },
+  ];
+
+  const content = {
+    intro: {
+      title: "Drei Gruppen – Drei Reiche",
+      subtitle: "Ein Erbe von Alexander dem Großen",
+      text: "Nachdem Alexander der Große gestorben war, wurde sein riesiges Reich unter seinen Generälen aufgeteilt. Ihr sollt nun in euren Gruppen eines dieser Reiche genau untersuchen und vorstellen.",
+      tasks: [
+        "Beantwortet die Fragen zu eurem Reich.",
+        "Sucht passende Bilder oder Karten.",
+        "Erstellt ein Plakat oder eine digitale Präsentation."
+      ],
+      imagePrompt: "The generals of Alexander the Great dividing a giant map of an empire",
+      vocabulary: [
+        { word: "Hellenismus", def: "Die Zeit, in der griechische Sprache und Kultur in vielen Ländern (wie Ägypten oder Persien) wichtig wurden." },
+        { word: "Diadochen", def: "Das waren die Nachfolger von Alexander. Es waren seine Generäle, die sich um die Macht stritten." }
+      ]
+    },
+    ptolemaeer: {
+      title: "Das Ptolemäerreich",
+      location: "Ägypten, Hauptstadt: Alexandria",
+      questions: [
+        "Wer war der allererste Herrscher in eurem Reich?",
+        "In welchem Jahr wurde das Reich gegründet?",
+        "Warum war ausgerechnet Ägypten so wichtig für Ptolemaios?",
+        "Was machte die Stadt Alexandria so besonders und berühmt?",
+        "Wie sah Alexandria damals aus? (Denkt an den Hafen, den Leuchtturm und die Bibliothek)",
+        "Was passierte in der berühmten Bibliothek von Alexandria?",
+        "Warum war die Wissenschaft (z. B. Mathe oder Sterne beobachten) dort so wichtig?",
+        "Wie haben die Menschen im Reich zusammengelebt? (Griechen und Ägypter)",
+        "Wie haben die Herrscher das mit der Religion und der Kultur geregelt?",
+        "Was war bei der Familie der Ptolemäer besonders seltsam? (Stichwort: Geschwister-Ehe)",
+        "Was hatte das Reich noch mit der alten griechischen Kultur zu tun?",
+        "Welche berühmten Personen kennt man heute noch aus diesem Reich? (z. B. Kleopatra)",
+        "Warum ging das Reich am Ende unter und wer kam dann an die Macht?"
+      ],
+      links: [
+        { label: "Wikipedia: Ptolemäer", url: "https://de.wikipedia.org/wiki/Ptolem%C3%A4erreich" },
+        { label: "Planet Wissen: Alexandria", url: "https://www.planet-wissen.de/kultur/metropolen/alexandria_der_leuchtturm_der_menschheit/index.html" }
+      ],
+      vocabulary: [
+        { word: "Pharos", def: "Der riesige Leuchtturm vor Alexandria – eines der sieben Weltwunder." },
+        { word: "Dynastie", def: "Eine Herrscherfamilie, in der die Macht immer vom Vater an die Kinder weitergegeben wird." }
+      ],
+      presentationTips: "Zeigt Bilder vom Leuchtturm und der Bibliothek. Erklärt euren Mitschülern, warum Alexandria die 'schlauste Stadt' der Welt war.",
+      imagePrompt: "The Great Library of Alexandria with scrolls and scholars"
+    },
+    seleukiden: {
+      title: "Das Seleukidenreich",
+      location: "Mesopotamien, Persien, Teile Indiens",
+      questions: [
+        "Welche Länder und Gebiete gehörten zu eurem Reich? (Sucht eine Karte!)",
+        "Wann genau entstand dieses Reich?",
+        "Wer war Seleukos und wie ist er Chef des Reiches geworden?",
+        "Warum war es so extrem schwierig, dieses riesige Reich zu regieren?",
+        "Welche verschiedenen Völker und Kulturen haben dort gewohnt?",
+        "Wie haben die Herrscher versucht, so viele verschiedene Menschen unter Kontrolle zu halten?",
+        "Welche Städte haben die Herrscher ganz neu gebaut?",
+        "Warum war der Handel (z. B. die Seidenstraße) so wichtig für das Reich?",
+        "Gab es Streit, Aufstände oder haben sich Teile des Reiches selbstständig gemacht?",
+        "Welche Probleme hatte das Militär (die Armee)?",
+        "Woran hat man in diesem Reich gemerkt, dass es 'hellenistisch' war?",
+        "Warum wurde das Reich mit der Zeit immer schwächer?",
+        "Wer hat die Seleukiden am Ende besiegt oder das Land übernommen?"
+      ],
+      links: [
+        { label: "Wikipedia: Seleukiden", url: "https://de.wikipedia.org/wiki/Seleukidenreich" },
+        { label: "Terra X: Die Seidenstraße", url: "https://www.zdf.de/dokumentation/terra-x/die-seidenstrasse-102.html" }
+      ],
+      vocabulary: [
+        { word: "Seidenstraße", def: "Ein langer Handelsweg, auf dem kostbare Waren von Asien bis zum Mittelmeer transportiert wurden." },
+        { word: "Zentralmacht", def: "Wenn eine Regierung von einem Ort aus versucht, ein riesiges Gebiet zu steuern." }
+      ],
+      presentationTips: "Nutzt unbedingt eine Landkarte! Euer Reich war das größte, das müsst ihr euren Mitschülern zeigen.",
+      imagePrompt: "A busy marketplace on the Silk Road with Greek and Persian merchants"
+    },
+    antigoniden: {
+      title: "Das Antigonidenreich",
+      location: "Griechenland & Mazedonien",
+      questions: [
+        "Was hatte euer Reich direkt mit Alexander dem Großen zu tun?",
+        "Wer war Antigonos und wie wurde er der Herrscher?",
+        "Wo genau lag das Herzstück (Kerngebiet) eures Reiches?",
+        "Warum war Mazedonien so wichtig für das ganze Gebiet?",
+        "Was machten die alten Städte wie Athen oder Korinth in dieser Zeit?",
+        "Haben sich die Leute gegen die Herrscher gewehrt?",
+        "Gegen welche anderen Diadochen (Nachfolger) hat euer Reich Krieg geführt?",
+        "Wie wurde das Land regiert? (Königreich oder Militärherrschaft?)",
+        "Welche Rolle hat die Armee für die Macht gespielt?",
+        "Wie haben sie es geschafft, dass die griechische Kultur erhalten blieb?",
+        "Gab es neue kulturelle Erfindungen oder Veränderungen?",
+        "Wie haben sie sich mit dem neuen, starken Rom verstanden?",
+        "Wann und warum war das Reich am Ende vorbei?"
+      ],
+      links: [
+        { label: "Wikipedia: Antigoniden", url: "https://de.wikipedia.org/wiki/Antigoniden" },
+        { label: "Lernhelfer: Mazedonien", url: "https://www.lernhelfer.de/schuelerlexikon/geschichte/artikel/makedonien" }
+      ],
+      vocabulary: [
+        { word: "Phalanx", def: "Eine Truppe von Soldaten, die ganz eng beieinander stehen und sehr lange Speere benutzen." },
+        { word: "Stadtstaaten", def: "Griechische Städte (wie Athen), die fast wie kleine eigene Länder funktionierten." }
+      ],
+      presentationTips: "Sprecht über die Soldaten und ihre Ausrüstung. Erklärt auch den Streit mit den Römern.",
+      imagePrompt: "Ancient Macedonian city of Pella with Greek columns and palace"
+    },
+    zusatz: {
+      title: "Zusatzfragen & Hilfe",
+      sections: [
+        {
+          heading: "Fragen für ALLE Gruppen",
+          items: [
+            "Welche Dinge aus der griechischen Kultur findet ihr in eurem Reich?",
+            "Wo haben sich griechische und fremde Kulturen vermischt? (Hellenismus)",
+            "Was von diesen alten Dingen gibt es heute immer noch?"
+          ]
+        },
+        {
+          heading: "Tipps für gute Gruppenarbeit",
+          items: [
+            "Teilt die Aufgaben auf: Wer sucht Infos? Wer bastelt das Plakat? Wer spricht?",
+            "Sprecht viel miteinander und helft euch gegenseitig.",
+            "Übt euren Vortrag mindestens einmal laut vor der Gruppe."
+          ]
         }
-        const tabBtns = document.getElementsByClassName("tab-btn");
-        for (let i = 0; i < tabBtns.length; i++) {
-            tabBtns[i].classList.remove("active");
-        }
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-        window.scrollTo(0,0);
+      ],
+      imagePrompt: "A museum display with ancient Greek statues and coins"
     }
+  };
 
-    function toggleGlossary(btn) {
-        const content = btn.nextElementSibling;
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-        }
-    }
-</script>
+  const renderContent = () => {
+    const data = content[activeTab];
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-col lg:flex-row gap-8 mb-10">
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold text-slate-800 mb-2">{data.title}</h2>
+            {data.location && <div className="flex items-center gap-2 text-blue-600 font-bold mb-4 bg-blue-50 px-3 py-1 rounded-full w-fit"><Map size={16}/> {data.location}</div>}
+            {data.subtitle && <p className="text-xl text-slate-600 mb-4">{data.subtitle}</p>}
+            {data.text && <p className="text-slate-700 leading-relaxed mb-6 text-lg">{data.text}</p>}
+            
+            {data.tasks && (
+              <div className="bg-amber-50 border-l-4 border-amber-400 p-5 mb-6 rounded-r-xl">
+                <h3 className="font-bold text-amber-800 mb-3 uppercase text-xs tracking-widest flex items-center gap-2"><Lightbulb size={16}/> Was ihr tun sollt:</h3>
+                <ul className="space-y-2">
+                  {data.tasks.map((task, i) => (
+                    <li key={i} className="flex gap-2 text-slate-700 font-medium">
+                      <CheckCircle2 size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                      {task}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
-</body>
-</html>
+            {data.presentationTips && (
+              <div className="bg-emerald-50 border-l-4 border-emerald-500 p-4 mb-6 rounded-r-xl">
+                <h3 className="font-bold text-emerald-800 mb-1 text-sm flex items-center gap-2"><MessageSquare size={16}/> Tipp für euren Vortrag:</h3>
+                <p className="text-slate-700 italic">"{data.presentationTips}"</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="w-full lg:w-80 shrink-0">
+            <div className="relative group overflow-hidden rounded-3xl border-2 border-slate-200 bg-slate-100 aspect-[4/5] flex flex-col items-center justify-center shadow-xl">
+              {generatedImages[activeTab] ? (
+                <img src={generatedImages[activeTab]} alt="History" className="w-full h-full object-cover" />
+              ) : (
+                <div className="text-center p-6">
+                  {isGenerating ? (
+                    <div className="flex flex-col items-center gap-4">
+                      <Loader2 className="animate-spin text-blue-600" size={48} />
+                      <p className="text-sm font-bold text-slate-600">Reise in die Vergangenheit...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <ImageIcon className="mx-auto mb-3 text-slate-300" size={64} />
+                      <p className="text-sm font-bold text-slate-400 mb-4 px-4 uppercase tracking-tighter leading-tight">Hier könnt ihr ein passendes Bild für euer Reich erstellen</p>
+                      <button 
+                        onClick={() => generateImage(data.imagePrompt, activeTab)}
+                        className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-lg active:scale-95 flex items-center gap-2 mx-auto"
+                      >
+                        <ImageIcon size={18} /> Bild erstellen
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+              {errorMessage && !isGenerating && (
+                <div className="absolute inset-x-4 bottom-4 bg-red-100 border border-red-200 p-2 rounded-xl flex items-center gap-2 text-red-600 text-xs font-bold">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-4">
+            <h3 className="text-xl font-bold text-slate-800 border-b-2 border-slate-100 pb-2 flex items-center gap-2">
+              <HelpCircle className="text-blue-500" size={20}/> Eure Fragen
+            </h3>
+            <div className="space-y-3">
+              {data.questions?.map((q, i) => (
+                <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-blue-300 transition-all flex gap-4 group">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-500 font-bold text-sm shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">{i + 1}</span>
+                  <p className="text-slate-700 font-medium self-center">{q}</p>
+                </div>
+              ))}
+              {data.sections?.map((section, i) => (
+                <div key={i} className="space-y-4 pt-4">
+                  <h4 className="font-bold text-blue-600 uppercase text-xs tracking-[0.2em]">{section.heading}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {section.items?.map((item, j) => (
+                      <div key={j} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-700 italic flex gap-3">
+                        <CheckCircle2 size={16} className="text-blue-400 shrink-0 mt-1" />
+                        "{item}"
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-8">
+            {data.vocabulary && (
+              <div className="bg-slate-900 text-white rounded-[2rem] p-6 shadow-2xl">
+                <h3 className="text-lg font-bold mb-5 flex items-center gap-2 text-blue-400">
+                  <Book size={20}/> Wort-Hilfe
+                </h3>
+                <div className="space-y-6">
+                  {data.vocabulary.map((v, i) => (
+                    <div key={i} className="group">
+                      <p className="font-black text-blue-300 mb-1 group-hover:text-white transition-colors uppercase text-xs tracking-widest">{v.word}</p>
+                      <p className="text-sm text-slate-400 leading-relaxed">{v.def}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(data.links || (data.sections && data.sections.find(s => s.links))) && (
+              <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm">
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-slate-800">
+                  <ExternalLink size={20} className="text-blue-600"/> Internet-Links
+                </h3>
+                <div className="space-y-3">
+                  {(data.links || data.sections.find(s => s.links).links).map((link, i) => (
+                    <a 
+                      key={i} 
+                      href={link.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-blue-600 hover:text-white transition-all group"
+                    >
+                      <span className="text-sm font-bold truncate pr-2">{link.label}</span>
+                      <ExternalLink size={16} className="shrink-0 opacity-40 group-hover:opacity-100" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col xl:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4">
+            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-200">
+              <Book className="text-white" size={24} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-800 leading-none">Hellenismus</h1>
+              <span className="text-[10px] font-black text-blue-600 tracking-[0.3em] uppercase">Projekt: Drei Reiche</span>
+            </div>
+          </div>
+          
+          <nav className="flex bg-slate-200/50 p-1.5 rounded-2xl overflow-x-auto max-w-full no-scrollbar">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all whitespace-nowrap ${
+                  activeTab === tab.id 
+                    ? 'bg-white text-blue-600 shadow-md translate-y-[-1px]' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200'
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 mt-12">
+        <div className="bg-white rounded-[3rem] p-8 md:p-14 shadow-2xl shadow-slate-300/30 border border-slate-100 min-h-[800px]">
+          {renderContent()}
+        </div>
+      </main>
+
+      <footer className="max-w-7xl mx-auto px-4 mt-20 text-center">
+        <div className="flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity">
+          <div className="h-px w-32 bg-slate-300"></div>
+          <p className="text-slate-500 font-black uppercase text-[10px] tracking-[0.5em]">
+            GOBS LINDERN • GESCHICHTSPROJEKT • 2025
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
